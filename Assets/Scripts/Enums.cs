@@ -1,0 +1,1 @@
+﻿public enum TileTypes  {None, Ground, Forest, River, Road, TownCenter, Workshop };
