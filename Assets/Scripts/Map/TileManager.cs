@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.Tilemaps;
 using System.Collections.Generic;
+using System.Linq;
 public class TileManager : MonoBehaviour
 {
     public bool finishedLoading = false;
@@ -63,6 +64,8 @@ public class TileManager : MonoBehaviour
                     tileData.id = x + y;
                     tileData.tileType = AssignTileType(tileData);
 
+                    AssignLayer(newTileObject, tileData);
+
                     newTileObject.name = tileData.name;
                     newTileObject.transform.position = tileData.pos;
 
@@ -122,6 +125,8 @@ public class TileManager : MonoBehaviour
 
                     Sprite sprite = tMap.GetSprite(tData.pos);                    
                     spriteRenderer.sprite = sprite;
+
+                    AssignLayer(tileObjects[i], tData);
                 }
             }
         }
@@ -141,11 +146,38 @@ public class TileManager : MonoBehaviour
         }
     }
 
+    private void AssignLayer(GameObject tile, TData data)
+    {        
+        switch(data.tileType)
+        {
+            case TileTypes.Road:
+                data.tileLayer = TileLayers.Road;
+                break;
+            case TileTypes.Ground:
+                data.tileLayer = TileLayers.Ground;
+                break;
+            case TileTypes.Forest:
+                data.tileLayer = TileLayers.Tree;
+                break;
+            case TileTypes.River:
+                data.tileLayer = TileLayers.River;               
+                break;
+            case TileTypes.Workshop:
+                data.tileLayer = TileLayers.Workshop;
+                break;
+            case TileTypes.TownCenter:
+                data.tileLayer = TileLayers.TownCenter;
+                break;
+        }
+
+        tile.layer = (int)data.tileLayer;
+    }
+
     private TileTypes AssignTileType(TData tile)
     {
         string tileName = tile.name;
         if(tileName.Contains("Ground"))
-        {
+        {           
             return TileTypes.Ground;
         }
         if (tileName.Contains("Forest"))
@@ -170,5 +202,32 @@ public class TileManager : MonoBehaviour
         }
 
         return TileTypes.None;
-    }   
+    }
+
+
+    public Sprite tempRoadSprite;
+
+    public void UpdateTile(GameObject tileToUpdate, TileTypes updateTo)
+    {
+        GameObject existingTile = tileObjects.Where(i => i.name == tileToUpdate.name).SingleOrDefault();
+        if (existingTile)
+        {
+            Debug.Log(existingTile);
+            TData tile = existingTile.GetComponent<TData>();
+            SpriteRenderer sr= existingTile.GetComponent<SpriteRenderer>();
+            switch (updateTo)
+            {
+                case TileTypes.Road:
+                    existingTile.name = ("Road" + (tile.pos.x).ToString() + (tile.pos.y).ToString());
+                    sr.sprite = tempRoadSprite;
+                    sr.color = Color.white;
+                    break;
+            }
+
+            tile.name = existingTile.name;
+            tile.tileType = updateTo;
+
+            AssignLayer(tileToUpdate, tile);
+        }
+    }
 }

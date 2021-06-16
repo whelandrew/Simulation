@@ -7,6 +7,7 @@ public class TData : MonoBehaviour
     public int id;
 
     public TileTypes tileType;
+    public TileLayers tileLayer;
 
     public string name;
     public Vector3Int pos;

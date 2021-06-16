@@ -11,10 +11,11 @@ public class Overlay : MonoBehaviour
     Camera main;
     public GameObject MapPieces;
 
-
     public Text tileInfoText;
     private bool tileManagerReady;
+    
     public TileManager tileManager;
+    public SpriteSelector sSelector;
 
     // Start is called before the first frame update
     void Start()
@@ -28,6 +29,13 @@ public class Overlay : MonoBehaviour
             tileManagerReady = true;
             AssignParent();
         }
+
+        /*
+        if(sSelector.selectionCompleted)
+        {
+            AssignParent();            
+        }
+        */
     }
     // Update is called once per frame
     void FixedUpdate()
