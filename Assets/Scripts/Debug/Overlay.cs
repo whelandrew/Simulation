@@ -29,13 +29,6 @@ public class Overlay : MonoBehaviour
             tileManagerReady = true;
             AssignParent();
         }
-
-        /*
-        if(sSelector.selectionCompleted)
-        {
-            AssignParent();            
-        }
-        */
     }
     // Update is called once per frame
     void FixedUpdate()

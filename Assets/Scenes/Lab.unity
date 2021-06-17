@@ -208,7 +208,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tManager: {fileID: 1027583834}
   menuButtons: {fileID: 1761646857}
-  highligher: {fileID: 1590403539}
+  highlighter: {fileID: 1590403539}
+  highlighterSize: {x: 100, y: 100}
   boxSelector: {fileID: 1058083761}
   sSScript: {fileID: 1058083766}
 --- !u!114 &153356804
@@ -684,7 +685,6 @@ GameObject:
   - component: {fileID: 345667979}
   - component: {fileID: 345667978}
   - component: {fileID: 345667977}
-  - component: {fileID: 345667980}
   - component: {fileID: 345667981}
   m_Layer: 0
   m_Name: Main Camera
@@ -757,21 +757,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &345667980
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 345667976}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 134b7491deaaad7479142ed4a44e42cf, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  gridSize: {x: 1, y: 1}
-  color: {r: 1, g: 1, b: 1, a: 0}
-  gridScale: 250
 --- !u!114 &345667981
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -951,7 +936,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.5019608}
+  m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -2450,7 +2435,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1027583833}
   - component: {fileID: 1027583834}
-  - component: {fileID: 1027583835}
   m_Layer: 0
   m_Name: Gameboard
   m_TagString: Untagged
@@ -2496,23 +2480,11 @@ MonoBehaviour:
   MaxMapSize: {x: 50, y: 50}
   MaxTileSize: {x: 16, y: 16}
   tempRoadSprite: {fileID: 21300060, guid: c51e149fbe894ac4d978bef4a10edd7d, type: 3}
---- !u!114 &1027583835
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1027583832}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5746e774dc7194d4f96b97025c64a28d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  isActive: 0
-  selectionCompleted: 0
-  usingDragNDraw: 0
-  drawCap: 10
-  selectedTiles: []
+  tempWorkshopSprites:
+  - {fileID: 21300580, guid: c51e149fbe894ac4d978bef4a10edd7d, type: 3}
+  - {fileID: 21300582, guid: c51e149fbe894ac4d978bef4a10edd7d, type: 3}
+  - {fileID: 21300612, guid: c51e149fbe894ac4d978bef4a10edd7d, type: 3}
+  - {fileID: 21300614, guid: c51e149fbe894ac4d978bef4a10edd7d, type: 3}
 --- !u!1 &1044064553
 GameObject:
   m_ObjectHideFlags: 0
@@ -2658,6 +2630,9 @@ MonoBehaviour:
   isActive: 0
   selectionCompleted: 0
   usingDragNDraw: 0
+  usingFourByFour: 0
+  isBuilding: 0
+  tManager: {fileID: 1027583834}
   drawCap: 10
   selectedTiles: []
 --- !u!1 &1068285888
@@ -9865,7 +9840,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1332041784
 Transform:
   m_ObjectHideFlags: 0
@@ -10280,8 +10255,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1590403539}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 16.4996, y: 16.5003, z: 0}
-  m_LocalScale: {x: 99.928, y: 100.50445, z: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 0, y: 0, z: 1}
   m_Children: []
   m_Father: {fileID: 1027583833}
   m_RootOrder: 5
@@ -10324,7 +10299,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 1000
   m_Sprite: {fileID: 21300000, guid: ae2f0beb0aefcf44986fd5bb30b69db9, type: 3}
-  m_Color: {r: 0.9771824, g: 1, b: 0, a: 1}
+  m_Color: {r: 0.9771824, g: 1, b: 0, a: 0.5254902}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
