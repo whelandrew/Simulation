@@ -211,36 +211,31 @@ public class TileManager : MonoBehaviour
 
     public void UpdateTile(GameObject[] tilesToUpdate, TileTypes updateTo)
     {
-        //for use with multiple sprites (4x4)
         int spriteCount = 0;
-        for (int i = 0; i < tilesToUpdate.Length; i++)
+        for (int i =0;i<tilesToUpdate.Length;i++)
         {
-            GameObject existingTile = tileObjects.Where(x => x.name == tilesToUpdate[i].name).SingleOrDefault();
-            if (existingTile)
+            GameObject existingTile = tilesToUpdate[i];
+            TData tile = existingTile.GetComponent<TData>();
+            SpriteRenderer sr = existingTile.GetComponent<SpriteRenderer>();
+            switch (updateTo)
             {
-                Debug.Log(existingTile);
-                TData tile = existingTile.GetComponent<TData>();
-                SpriteRenderer sr = existingTile.GetComponent<SpriteRenderer>();
-                switch (updateTo)
-                {
-                    case TileTypes.Road:
-                        existingTile.name = ("Road" + (tile.pos.x).ToString() + (tile.pos.y).ToString());
-                        sr.sprite = tempRoadSprite;
-                        sr.color = Color.white;
-                        break;
-                    case TileTypes.Workshop:
-                        existingTile.name = ("Workshop" + (tile.pos.x).ToString() + (tile.pos.y).ToString());
-                        sr.sprite = tempWorkshopSprites[spriteCount];
-                        spriteCount++;
-                        sr.color = Color.white;
-                        break;
-                }
-
-                tile.name = existingTile.name;
-                tile.tileType = updateTo;
-
-                AssignLayer(tilesToUpdate[i], tile);
+                case TileTypes.Road:
+                    existingTile.name = ("Road" + (tile.pos.x).ToString() + (tile.pos.y).ToString());
+                    sr.sprite = tempRoadSprite;
+                    sr.color = Color.white;
+                    break;
+                case TileTypes.Workshop:
+                    existingTile.name = ("Workshop" + (tile.pos.x).ToString() + (tile.pos.y).ToString());
+                    sr.sprite = tempWorkshopSprites[spriteCount];
+                    spriteCount++;
+                    sr.color = Color.white;
+                    break;
             }
+
+            tile.name = existingTile.name;
+            tile.tileType = updateTo;
+
+            AssignLayer(tilesToUpdate[i], tile);
         }
     }
 
@@ -269,17 +264,29 @@ public class TileManager : MonoBehaviour
         tile.neighbors[6] = new Vector3Int(tile.pos.x, tile.pos.y - 1, 0);
 
         //x  , y+1 up
-        tile.neighbors[7] = new Vector3Int(tile.pos.x, tile.pos.y + 1, 0);
+        tile.neighbors[7] = new Vector3Int(tile.pos.x, tile.pos.y + 1, 0);        
     }
 
-    public bool FindSecondClosestNeighbor(TData curTile, TileTypes[] tileTypeToFind, string forcedNeighbor = "null")
+    public bool FindSecondClosestNeighbor(TData curTile, TileTypes[] tileTypeToFind, bool useOnlyFour, string forcedNeighbor = "null")
     {
         Vector3Int[] neighbors = curTile.neighbors;
         for (int i = 0; i < neighbors.Length; i++)
         {
-            TData neighborTile = tileObjects.Where(j => j.GetComponent<TData>().pos == neighbors[i]).FirstOrDefault().GetComponent<TData>();
-            if(FindClosestNeighbor(neighborTile, tileTypeToFind))
-                return true;
+            if (useOnlyFour)
+            {
+                if (i == 0 || i == 3 || i == 6 || i == 7)
+                {
+                    TData neighborTile = tileObjects.Where(j => j.GetComponent<TData>().pos == neighbors[i]).FirstOrDefault().GetComponent<TData>();
+                    if (FindClosestNeighbor(neighborTile, tileTypeToFind))
+                        return true;
+                }
+            }
+            else
+            {
+                TData neighborTile = tileObjects.Where(j => j.GetComponent<TData>().pos == neighbors[i]).FirstOrDefault().GetComponent<TData>();
+                if (FindClosestNeighbor(neighborTile, tileTypeToFind))
+                    return true;
+            }
         }
 
         return false;
@@ -316,9 +323,13 @@ public class TileManager : MonoBehaviour
                     foundTiles.Add(tileObjects[j]);
                 }
             }
-            //foundTiles.Add(tileObjects.Where(j => j.GetComponent<TData>().pos == tilePos[i]).First().GetComponent<GameObject>());
         }
 
         return foundTiles.ToArray();
+    }
+
+    public TData FindTileData(Vector3Int tilePos)
+    {
+        return tileObjects.Where(i => i.GetComponent<TData>().pos == tilePos).FirstOrDefault().GetComponent<TData>();
     }
 }
