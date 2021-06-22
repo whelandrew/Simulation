@@ -169,6 +169,15 @@ public class TileManager : MonoBehaviour
             case TileTypes.TownCenter:
                 data.tileLayer = TileLayers.TownCenter;
                 break;
+            case TileTypes.House:
+                data.tileLayer = TileLayers.House;
+                break;
+            case TileTypes.Farm:
+                data.tileLayer = TileLayers.Farm;
+                break;
+            case TileTypes.Defense:
+                data.tileLayer = TileLayers.Defense;
+                break;
         }
 
         tile.layer = (int)data.tileLayer;
@@ -208,34 +217,58 @@ public class TileManager : MonoBehaviour
 
     public Sprite tempRoadSprite;
     public Sprite[] tempWorkshopSprites;
+    public Sprite[] tempHouseSprites;
+    public Sprite[] tempFarmSprites;
+    public Sprite[] tempDefenseSprites;
 
     public void UpdateTile(GameObject[] tilesToUpdate, TileTypes updateTo)
     {
         int spriteCount = 0;
         for (int i =0;i<tilesToUpdate.Length;i++)
         {
-            GameObject existingTile = tilesToUpdate[i];
+            GameObject existingTile = tileObjects.Where(x => x.GetComponent<TData>().pos == tilesToUpdate[i].transform.position).FirstOrDefault();
             TData tile = existingTile.GetComponent<TData>();
             SpriteRenderer sr = existingTile.GetComponent<SpriteRenderer>();
-            switch (updateTo)
+            if (existingTile)
             {
-                case TileTypes.Road:
-                    existingTile.name = ("Road" + (tile.pos.x).ToString() + (tile.pos.y).ToString());
-                    sr.sprite = tempRoadSprite;
-                    sr.color = Color.white;
-                    break;
-                case TileTypes.Workshop:
-                    existingTile.name = ("Workshop" + (tile.pos.x).ToString() + (tile.pos.y).ToString());
-                    sr.sprite = tempWorkshopSprites[spriteCount];
-                    spriteCount++;
-                    sr.color = Color.white;
-                    break;
+                switch (updateTo)
+                {
+                    case TileTypes.Road:
+                        existingTile.name = ("Road" + (tile.pos.x).ToString() + (tile.pos.y).ToString());
+                        sr.sprite = tempRoadSprite;
+                        sr.color = Color.white;
+                        break;
+                    case TileTypes.Workshop:
+                        existingTile.name = ("Workshop" + (tile.pos.x).ToString() + (tile.pos.y).ToString());
+                        sr.sprite = tempWorkshopSprites[spriteCount];
+                        spriteCount++;
+                        sr.color = Color.white;
+                        break;
+                    case TileTypes.House:
+                        existingTile.name = ("House" + (tile.pos.x).ToString() + (tile.pos.y).ToString());
+                        sr.sprite = tempHouseSprites[spriteCount];
+                        spriteCount++;
+                        sr.color = Color.white;
+                        break;
+                    case TileTypes.Farm:
+                        existingTile.name = ("Farm" + (tile.pos.x).ToString() + (tile.pos.y).ToString());
+                        sr.sprite = tempFarmSprites[spriteCount];
+                        spriteCount++;
+                        sr.color = Color.white;
+                        break;
+                    case TileTypes.Defense:
+                        existingTile.name = ("Defense" + (tile.pos.x).ToString() + (tile.pos.y).ToString());
+                        sr.sprite = tempDefenseSprites[spriteCount];
+                        spriteCount++;
+                        sr.color = Color.white;
+                        break;
+                }
+
+                tile.name = existingTile.name;
+                tile.tileType = updateTo;
+
+                AssignLayer(tilesToUpdate[i], tile);
             }
-
-            tile.name = existingTile.name;
-            tile.tileType = updateTo;
-
-            AssignLayer(tilesToUpdate[i], tile);
         }
     }
 
@@ -299,7 +332,10 @@ public class TileManager : MonoBehaviour
         {
             TData data = tileObjects.Where(j => j.GetComponent<TData>().pos == curTile.neighbors[i]).FirstOrDefault().GetComponent<TData>();
 
-            if (forcedNeighbor == data.name) return true;
+            if (forcedNeighbor == data.name)
+            {
+                return true;
+            }
 
             if(tileTypeToFind.Contains(data.tileType))
             {
