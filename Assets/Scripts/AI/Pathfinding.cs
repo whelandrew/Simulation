@@ -50,13 +50,13 @@ public class Pathfinding : MonoBehaviour
         {
             TData tile = alltiles[i].GetComponent<TData>();
             tile.gCost = int.MaxValue;
-            tile.fCost = CalculateFCost(tile);
+            tile.fCost = tile.gCost + tile.hCost;
             tile.cameFrom = null;
         }
 
         start.gCost = 0;
         start.hCost = CalculateDistancecost(start, end);
-        start.fCost = CalculateFCost(start);
+        start.fCost = start.gCost + start.hCost;
 
         //cycle
         while (openList.Count > 0)
@@ -73,33 +73,56 @@ public class Pathfinding : MonoBehaviour
 
             //search neighbors
             Vector3Int[] neighbors = cur.neighbors;
+            if(cur.neighbors == null)
+            {
+                Debug.LogWarning("cur.neighbors == null");
+                return null; 
+            }
+
             for (int j = 0; j < neighbors.Length; j++)
             {
                 TData nTile = tManager.FindTileData(neighbors[j]);
-                if (closedList.Contains(nTile))
+                //detect which tiles are allowed to walk on
+                if(PathingAllowed(new TileTypes[] { TileTypes.Ground}, nTile))
                 {
-                    continue;
-                }
-
-                int tentativeGCost = cur.gCost + CalculateDistancecost(cur, nTile);
-                if (tentativeGCost < nTile.gCost)
-                {
-                    nTile.cameFrom = cur;
-                    nTile.gCost = tentativeGCost;
-                    nTile.hCost = CalculateDistancecost(nTile, end);
-                    nTile.fCost = CalculateFCost(nTile);
-
-                    if (!openList.Contains(nTile))
+                    if (closedList.Contains(nTile))
                     {
-                        openList.Add(nTile);
+                        continue;
+                    }
+
+                    int tentativeGCost = cur.gCost + CalculateDistancecost(cur, nTile);
+                    if (tentativeGCost < nTile.gCost)
+                    {
+                        nTile.cameFrom = cur;
+                        nTile.gCost = tentativeGCost;
+                        nTile.hCost = CalculateDistancecost(nTile, end);
+                        nTile.fCost = nTile.gCost + nTile.hCost;
+
+                        if (!openList.Contains(nTile))
+                        {
+                            openList.Add(nTile);
+                        }
                     }
                 }
             }
         }
 
-
         //out of cycle. No path found
-        return null;
+        Debug.LogWarning("No Path Found");
+        return new List<Vector3Int>();
+    }
+
+    public bool PathingAllowed(TileTypes[] blockedTypes, TData tile)
+    {
+        for(int i=0;i<blockedTypes.Length;i++)
+        {
+            if(tile.tileType==blockedTypes[i])
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     private List<Vector3Int> CalculatePath(TData end)
@@ -114,15 +137,15 @@ public class Pathfinding : MonoBehaviour
         }
         path.Reverse();
 
-        return path ;
+        return path;
     }
 
     private TData GetLowestFCost(List<TData> list)
     {
-        TData lowestCost = new TData();
-        for(int i=0;i<list.Count;i++)
+        TData lowestCost = list[0];
+        for (int i = 0; i < list.Count; i++)
         {
-            if(list[i].fCost<lowestCost.fCost)
+            if (list[i].fCost < lowestCost.fCost)
             {
                 lowestCost = list[i];
             }
@@ -135,13 +158,7 @@ public class Pathfinding : MonoBehaviour
     {
         int xDistance = Mathf.Abs(a.pos.x - b.pos.x);
         int yDistance = Mathf.Abs(a.pos.y - b.pos.y);
-        int remaining = Mathf.Abs(xDistance - yDistance);
+        int remaining = Mathf.Abs(xDistance - yDistance);        
         return MOVE_DIAGONAL_COST * Mathf.Min(xDistance, yDistance) + MOVE_STRAIGHT_COST + remaining;
     }
-
-    private int CalculateFCost(TData tile)
-    {
-        return tile.fCost = tile.gCost + tile.hCost;
-    }
-
 }

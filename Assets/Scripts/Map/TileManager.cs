@@ -12,6 +12,8 @@ public class TileManager : MonoBehaviour
     public Vector2Int MaxMapSize = new Vector2Int(50, 50);
     public Vector2Int MaxTileSize = new Vector2Int(16, 16);
 
+    public int buildingTotal = 0;
+
     private void Start()
     {
         tileMaps = GridObject.GetComponentsInChildren<Tilemap>();
@@ -46,7 +48,6 @@ public class TileManager : MonoBehaviour
     {
         BoundsInt bounds = tMap.cellBounds;
         TileBase[] allTiles = tMap.GetTilesBlock(bounds);
-        List<TileBase> tiles = new List<TileBase>();
 
         for (int x = 0; x < bounds.size.x; x++)
         {
@@ -73,7 +74,6 @@ public class TileManager : MonoBehaviour
                     BoxCollider2D newCollider = newTileObject.AddComponent<BoxCollider2D>();
                     newCollider.isTrigger = true;
                     newCollider.size = Vector2.one;
-                    //newCollider.offset = new Vector2(.5f, .5f);
 
                     SpriteRenderer spriteRenderer = newTileObject.AddComponent<SpriteRenderer>();
                     Sprite sprite = tMap.GetSprite(tileData.pos);
@@ -153,30 +153,39 @@ public class TileManager : MonoBehaviour
         {
             case TileTypes.Road:
                 data.tileLayer = TileLayers.Road;
+                data.isBuilding = false;
                 break;
             case TileTypes.Ground:
                 data.tileLayer = TileLayers.Ground;
+                data.isBuilding = false;
                 break;
             case TileTypes.Forest:
                 data.tileLayer = TileLayers.Tree;
+                data.isBuilding = false;
                 break;
             case TileTypes.River:
                 data.tileLayer = TileLayers.River;
+                data.isBuilding = false;
                 break;
             case TileTypes.Workshop:
                 data.tileLayer = TileLayers.Workshop;
+                data.isBuilding = true;
                 break;
             case TileTypes.TownCenter:
                 data.tileLayer = TileLayers.TownCenter;
+                data.isBuilding = true;
                 break;
             case TileTypes.House:
                 data.tileLayer = TileLayers.House;
+                data.isBuilding = true;
                 break;
             case TileTypes.Farm:
                 data.tileLayer = TileLayers.Farm;
+                data.isBuilding = true;
                 break;
             case TileTypes.Defense:
                 data.tileLayer = TileLayers.Defense;
+                data.isBuilding = true;
                 break;
         }
 
@@ -210,6 +219,10 @@ public class TileManager : MonoBehaviour
         {
             return TileTypes.Workshop;
         }
+        if (tileName.Contains("House"))
+        {
+            return TileTypes.House;
+        }
 
         return TileTypes.None;
     }
@@ -223,6 +236,7 @@ public class TileManager : MonoBehaviour
     public void UpdateTile(GameObject[] tilesToUpdate, TileTypes updateTo)
     {
         int spriteCount = 0;
+        int newBuildingCount = 0;
         for (int i =0;i<tilesToUpdate.Length;i++)
         {
             GameObject existingTile = tileObjects.Where(x => x.GetComponent<TData>().pos == tilesToUpdate[i].transform.position).FirstOrDefault();
@@ -234,37 +248,49 @@ public class TileManager : MonoBehaviour
                 {
                     case TileTypes.Road:
                         existingTile.name = ("Road" + (tile.pos.x).ToString() + (tile.pos.y).ToString());
+                        tile.isBuilding = false;
                         sr.sprite = tempRoadSprite;
                         sr.color = Color.white;
+                        newBuildingCount = 1;
                         break;
                     case TileTypes.Workshop:
                         existingTile.name = ("Workshop" + (tile.pos.x).ToString() + (tile.pos.y).ToString());
+                        tile.isBuilding = true;
                         sr.sprite = tempWorkshopSprites[spriteCount];
                         spriteCount++;
                         sr.color = Color.white;
+                        newBuildingCount = 1;
                         break;
                     case TileTypes.House:
                         existingTile.name = ("House" + (tile.pos.x).ToString() + (tile.pos.y).ToString());
+                        tile.isBuilding = true;
                         sr.sprite = tempHouseSprites[spriteCount];
                         spriteCount++;
                         sr.color = Color.white;
+                        newBuildingCount = 1;
                         break;
                     case TileTypes.Farm:
                         existingTile.name = ("Farm" + (tile.pos.x).ToString() + (tile.pos.y).ToString());
+                        tile.isBuilding = true;
                         sr.sprite = tempFarmSprites[spriteCount];
                         spriteCount++;
                         sr.color = Color.white;
+                        newBuildingCount = 1;
                         break;
                     case TileTypes.Defense:
                         existingTile.name = ("Defense" + (tile.pos.x).ToString() + (tile.pos.y).ToString());
+                        tile.isBuilding = true;
                         sr.sprite = tempDefenseSprites[spriteCount];
                         spriteCount++;
                         sr.color = Color.white;
+                        newBuildingCount = 1;
                         break;
                 }
 
                 tile.name = existingTile.name;
                 tile.tileType = updateTo;
+
+                buildingTotal += newBuildingCount;
 
                 AssignLayer(tilesToUpdate[i], tile);
             }
@@ -296,7 +322,15 @@ public class TileManager : MonoBehaviour
         tile.neighbors[6] = new Vector3Int(tile.pos.x, tile.pos.y - 1, 0);
 
         //x  , y+1 up
-        tile.neighbors[7] = new Vector3Int(tile.pos.x, tile.pos.y + 1, 0);        
+        tile.neighbors[7] = new Vector3Int(tile.pos.x, tile.pos.y + 1, 0);     
+        
+        for(int i =0;i<tile.neighbors.Length;i++)
+        {
+            if(tile.neighbors[i]==null)
+            {
+                tile.neighbors[i] = Vector3Int.zero;
+            }
+        }
     }
 
     public bool FindSecondClosestNeighbor(TData curTile, TileTypes[] tileTypeToFind, bool useOnlyFour, string forcedNeighbor = "null")
@@ -365,7 +399,15 @@ public class TileManager : MonoBehaviour
 
     public TData FindTileData(Vector3Int tilePos)
     {
-        return tileObjects.Where(i => i.GetComponent<TData>().pos == tilePos).FirstOrDefault().GetComponent<TData>();
+        for (int i = 0; i < tileObjects.Count; i++)
+        {
+            if (tileObjects[i].GetComponent<TData>().pos == tilePos)
+            {
+                return tileObjects[i].GetComponent<TData>();
+            }
+        }
+
+        return new TData();
     }
         
     public List<TData> GetAllTilesOfType(TileTypes type)

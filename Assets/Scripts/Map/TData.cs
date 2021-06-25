@@ -19,4 +19,11 @@ public class TData : MonoBehaviour
     public int hCost;
     public int fCost;
     public TData cameFrom;
+
+    //building details for onmouseover
+    public bool isBuilding;
+    public bool owned;
+    public VillagerData owner;
+
+
 }

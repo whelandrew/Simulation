@@ -4,41 +4,68 @@ public class VillagerBehavior : MonoBehaviour
 {
     public Pathfinding pathing;
     public TileManager tManager;
+    public BoxCollider2D bCollider;
 
-    VillagerData vData;
+    public VillagerData vData;
+    private int pathVal = 0;
 
-    private void Start()
+    private void Update()
     {
-        vData = GetComponent<VillagerData>();
+        if (vData.isActive)
+        {
+            WalkPath();
+            Behaviors();
+        }
+    }
+
+    private void Behaviors()
+    {        
+        if (vData.hasHome)
+        {
+            //go home
+            //go to work
+        }
+        else
+        {
+            if (!vData.isMoving)
+            {
+                //if homeless
+                GoToTownCenter();
+            }
+        }
+    }
+
+    private void WalkPath()
+    {
+        if (vData.currentPath.Length > 0)
+        {
+            vData.isMoving = true;
+            Debug.Log(vData.currentPath.Length);
+            Debug.Log(pathVal);
+            transform.position = Vector3.MoveTowards(transform.position, vData.currentPath[pathVal], vData.speed * Time.deltaTime);
+            
+            if (transform.position == vData.currentPath[pathVal])
+            {
+                pathVal++;
+
+                if (pathVal == vData.currentPath.Length)
+                {
+                    pathVal = 0;
+                    vData.isMoving = false;
+                    vData.currentPath = new Vector3Int[0];
+                }
+            }
+        }
     }
 
     public void ActivateVillager()
     {
         vData.isActive = true;
-        GoToTownCenter();
+        bCollider.enabled = true;
     }
 
     private void GoToTownCenter()
-    {
-        //start - need TData of where villager is standing
-        if(vData.currentLocation == null)
-        {
-            FindCurrentLocation();
-        }
-        //Target - need TData of location (is there an entrance to use?)        
-        //
-        pathing.FindPath(vData.currentLocation, tManager.GetOneTileOfType(TileTypes.TownCenter));
-    }
-
-    void FindCurrentLocation()
-    {
-        RaycastHit2D hit = Physics2D.Raycast(transform.position, -Vector2.up);
-        if (hit.collider != null)
-        {
-            if(hit.collider.tag == "Tile")
-            {
-                vData.currentLocation = hit.collider.GetComponent<TData>();
-            }
-        }
+    {  
+        vData.currentPath = pathing.FindPath(vData.currentLocation, tManager.GetOneTileOfType(TileTypes.TownCenter)).ToArray();                
     }
 }

@@ -13,11 +13,10 @@ public class Overlay : MonoBehaviour
 
     public Text tileInfoText;
     private bool tileManagerReady;
-    
+
+    public GameboardController gController;
     public TileManager tileManager;
     public SpriteSelector sSelector;
-
-    // Start is called before the first frame update
     void Start()
     {
         main = Camera.main;
@@ -51,14 +50,25 @@ public class Overlay : MonoBehaviour
             {
 
             }
+            if(hit.collider.tag == "VillagerSpawns")
+            {
+
+            }
+            if(hit.collider.tag =="Villager")
+            {
+
+            }
             else
             {
                 tileInfoText.text = "";
                 TData tile = hit.collider.GetComponent<TData>();
-                var fields = tile.GetType().GetFields();
-                foreach(var i in fields)
+                if (tile != null)
                 {
-                    tileInfoText.text += i.Name + " : " + i.GetValue(tile) + "\n";
+                    var fields = tile.GetType().GetFields();
+                    foreach (var i in fields)
+                    {
+                        tileInfoText.text += i.Name + " : " + i.GetValue(tile) + "\n";
+                    }
                 }
             }
         }
@@ -99,6 +109,10 @@ public class Overlay : MonoBehaviour
                     case TileTypes.Workshop:
                         foreach (Transform t in tileParents)
                             if (t.gameObject.name.Contains("Workshop")) tile.transform.parent = t;
+                        break;
+                    case TileTypes.House:
+                        foreach (Transform t in tileParents)
+                            if (t.gameObject.name.Contains("House")) tile.transform.parent = t;
                         break;
                 }
             }

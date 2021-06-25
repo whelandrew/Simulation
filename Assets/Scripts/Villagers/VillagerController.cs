@@ -1,16 +1,19 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class VillagerController : MonoBehaviour
 {
+    public GameboardController gController;
+
     public GameObject villagerCache;
     private List<GameObject> villagers = new List<GameObject>();
 
     public GameObject VillagerSpawnPoints;
     private BoxCollider2D[] spawnPoints;
 
-    private void Start()
+    public int villagerTotal;
+
+    private void Awake()
     {
         foreach(SpriteRenderer i in villagerCache.GetComponentsInChildren<SpriteRenderer>())
         {
@@ -18,16 +21,13 @@ public class VillagerController : MonoBehaviour
         }
 
         spawnPoints = VillagerSpawnPoints.GetComponentsInChildren<BoxCollider2D>();
-
-        //Remove after testing
-        //CreateVillager();
-        //////////////////////
     }
 
     public void Reset(int val)
     {
         VillagerData vData = villagers[val].GetComponent<VillagerData>();
         SpriteRenderer sr = villagers[val].GetComponent<SpriteRenderer>();
+        BoxCollider2D bCollider = villagers[val].GetComponent<BoxCollider2D>();
 
         vData.isActive = false;
         vData.FName = "";
@@ -35,6 +35,8 @@ public class VillagerController : MonoBehaviour
         vData.id = "";
 
         sr.enabled = false;
+
+        bCollider.enabled = false;
 
         villagers[val].name = "Unused Villager";
     }
@@ -58,6 +60,8 @@ public class VillagerController : MonoBehaviour
                 vData.isActive = true;
                 vData.Gender = 0;
 
+                vData.speed = 5;
+
                 vData.FName = vNames.GetRandomFirstName(vData.Gender);
                 vData.LName = vNames.GetRandomLastName(vData.Gender);
 
@@ -68,7 +72,11 @@ public class VillagerController : MonoBehaviour
                 villagers[i].name = vData.id;
                 villagers[i].transform.position = GetSpawnPoint();
 
-                vData.pos = new Vector2Int((int)villagers[i].transform.position.x, (int)villagers[i].transform.position.y);
+                vData.pos = new Vector2Int((int)villagers[i].transform.position.x, (int)villagers[i].transform.position.y);                                
+                vData.currentLocation = gController.tManager.FindTileData(new Vector3Int((int)villagers[i].transform.position.x, (int)villagers[i].transform.position.y, 0));
+                vData.job = JobType.None;
+                vData.hasJob = false;
+                villagerTotal++;
 
                 vB.ActivateVillager();
                 break;
