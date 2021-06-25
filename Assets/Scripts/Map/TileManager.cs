@@ -214,7 +214,6 @@ public class TileManager : MonoBehaviour
         return TileTypes.None;
     }
 
-
     public Sprite tempRoadSprite;
     public Sprite[] tempWorkshopSprites;
     public Sprite[] tempHouseSprites;
@@ -367,5 +366,77 @@ public class TileManager : MonoBehaviour
     public TData FindTileData(Vector3Int tilePos)
     {
         return tileObjects.Where(i => i.GetComponent<TData>().pos == tilePos).FirstOrDefault().GetComponent<TData>();
+    }
+        
+    public List<TData> GetAllTilesOfType(TileTypes type)
+    {
+        List<TData> tiles = new List<TData>();
+        for(int i = 0; i < tileObjects.Count; i++)
+        {
+            TData tile = tileObjects[i].GetComponent<TData>();
+            if(tile!=null)
+            {
+                if(tile.tileType == type)
+                {
+                    tiles.Add(tile);
+                }
+            }
+        }
+
+        return tiles;
+    }
+
+    public List<TData> GetAllTileData()
+    {
+        List<TData> tiles = new List<TData>();
+        for(int i=0;i<tileObjects.Count;i++)
+        {
+            tiles.Add(tileObjects[i].GetComponent<TData>());
+        }
+
+        return tiles;
+    }
+
+    public Vector2Int GetTargetCenter(TileTypes type, string owner=null)
+    {
+        List<Vector3Int> pos = new List<Vector3Int>();
+        if(owner==null)
+        {
+            for(int i =0;i<tileObjects.Count;i++)
+            {
+                if(tileObjects[i].GetComponent<TData>().tileType == type)
+                {
+                    pos.Add(tileObjects[i].GetComponent<TData>().pos);
+                }
+            }
+        }
+
+        Vector3Int final = Vector3Int.zero;
+        for (int i = 0; i < pos.Count; i++)
+        {
+            final += pos[i];
+        }
+
+        return new Vector2Int((final.x / pos.Count), final.y / pos.Count);
+    }
+
+    public TData GetOneTileOfType(TileTypes type, string owner=null)
+    {
+        for(int i=0;i<tileObjects.Count;i++)
+        {
+            if(tileObjects[i].GetComponent<TData>().tileType==type)
+            {
+                if(owner!=null)
+                {
+                    //find specific type owned by villager
+                }
+                else
+                {
+                    return tileObjects[i].GetComponent<TData>();
+                }
+            }
+        }
+
+        return null;
     }
 }

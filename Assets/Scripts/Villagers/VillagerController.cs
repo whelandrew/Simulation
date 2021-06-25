@@ -20,7 +20,7 @@ public class VillagerController : MonoBehaviour
         spawnPoints = VillagerSpawnPoints.GetComponentsInChildren<BoxCollider2D>();
 
         //Remove after testing
-        CreateVillager();
+        //CreateVillager();
         //////////////////////
     }
 
@@ -50,10 +50,10 @@ public class VillagerController : MonoBehaviour
         {
             VillagerData vData = villagers[i].GetComponent<VillagerData>();
             SpriteRenderer sr = villagers[i].GetComponent<SpriteRenderer>();
+            VillagerBehavior vB = villagers[i].GetComponent<VillagerBehavior>();
             if (!vData.isActive)
             {
                 VillagerNames vNames = new VillagerNames();
-
 
                 vData.isActive = true;
                 vData.Gender = 0;
@@ -68,6 +68,9 @@ public class VillagerController : MonoBehaviour
                 villagers[i].name = vData.id;
                 villagers[i].transform.position = GetSpawnPoint();
 
+                vData.pos = new Vector2Int((int)villagers[i].transform.position.x, (int)villagers[i].transform.position.y);
+
+                vB.ActivateVillager();
                 break;
             }
         }

@@ -13,4 +13,10 @@ public class TData : MonoBehaviour
     public Vector2Int size;
 
     public Vector3Int[] neighbors;
+
+    //for pathfinding
+    public int gCost;
+    public int hCost;
+    public int fCost;
+    public TData cameFrom;
 }
