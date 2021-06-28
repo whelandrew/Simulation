@@ -83,4 +83,19 @@ public class VillagerController : MonoBehaviour
             }
         }
     }
+
+    public List<VillagerData> GetActiveVillagers()
+    {
+        List<VillagerData> actives = new List<VillagerData>();
+        for(int i=0;i<villagers.Count;i++)
+        {
+            VillagerData vData = villagers[i].GetComponent<VillagerData>();
+            if(vData.isActive)
+            {
+                actives.Add(vData);
+            }
+        }
+
+        return actives;
+    }
 }

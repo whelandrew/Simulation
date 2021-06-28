@@ -3,6 +3,7 @@
 public class PathCollider : MonoBehaviour
 {
     public VillagerData vData;
+    public VillagerBehavior vBehavior;
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
@@ -13,8 +14,22 @@ public class PathCollider : MonoBehaviour
                 TData tile = collision.GetComponent<TData>();
                 if (tile != vData.currentLocation)
                 {
-                    Debug.Log("Enter");
                     vData.currentLocation = collision.GetComponent<TData>();
+                }
+
+                if(tile.tileType == vData.goingTo)
+                {
+                    vData.currentPath = new Vector3Int[0];
+                    vData.isMoving = false;
+                    vBehavior.atLocation = true;
+                }
+
+                if (tile.tileType == TileTypes.House)
+                {
+                    if (tile.owner == vData)
+                    {
+                        vBehavior.AtHome();
+                    }
                 }
             }
         }
@@ -24,7 +39,7 @@ public class PathCollider : MonoBehaviour
     {
         if (vData.isActive)
         {
-            Debug.Log("Exit");
+            
         }
     }
 
@@ -37,7 +52,6 @@ public class PathCollider : MonoBehaviour
                 TData tile = collision.GetComponent<TData>();
                 if (tile != vData.currentLocation)
                 {
-                    Debug.Log("Stay");
                     vData.currentLocation = collision.GetComponent<TData>();
                 }
             }

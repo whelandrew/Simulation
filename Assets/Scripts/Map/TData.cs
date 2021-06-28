@@ -12,6 +12,10 @@ public class TData : MonoBehaviour
     public Vector3Int pos;
     public Vector2Int size;
 
+    public int HP;
+    public int AC;
+    public int footTraffic;
+
     public Vector3Int[] neighbors;
 
     //for pathfinding
@@ -24,6 +28,4 @@ public class TData : MonoBehaviour
     public bool isBuilding;
     public bool owned;
     public VillagerData owner;
-
-
 }

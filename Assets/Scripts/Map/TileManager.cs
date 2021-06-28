@@ -379,6 +379,24 @@ public class TileManager : MonoBehaviour
         return false;
     }
 
+    public List<TData> GetClosestNeighborsOfType(TData curTile, TileTypes tileTypeToFind)
+    {
+        List<TData> foundTiles = new List<TData>();
+
+        for(int i=0;i<curTile.neighbors.Length;i++)
+        {
+            TData nTile = FindTileData(curTile.neighbors[i]);
+            for(int j=0;j<nTile.neighbors.Length;j++)
+            {
+                if(nTile.neighbors[j]==curTile.pos && nTile.tileType==tileTypeToFind && !nTile.owned)
+                {
+                    foundTiles.Add(nTile);
+                }
+            }            
+        }
+
+        return foundTiles;
+    }
     public GameObject[] RetrieveTileObjects(Vector3Int[] tilePos)
     {
         List<GameObject> foundTiles = new List<GameObject>();
