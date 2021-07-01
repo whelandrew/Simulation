@@ -21,14 +21,25 @@ public class PathCollider : MonoBehaviour
                 {
                     vData.currentPath = new Vector3Int[0];
                     vData.isMoving = false;
-                    vBehavior.atLocation = true;
                 }
 
-                if (tile.tileType == TileTypes.House)
+                if (tile == vData.target)
                 {
-                    if (tile.owner == vData)
+                    vData.atLocation = true;
+                    switch(tile.tileType)
                     {
-                        vBehavior.AtHome();
+                        case TileTypes.House:
+                            if(tile.owner==vData)
+                            {
+                                vBehavior.AtHome();
+                            }
+                            break;
+                        case TileTypes.Workshop:
+                            if(tile.owner == vData)
+                            {
+                                vBehavior.AtWork();
+                            }
+                            break;
                     }
                 }
             }
@@ -53,6 +64,10 @@ public class PathCollider : MonoBehaviour
                 if (tile != vData.currentLocation)
                 {
                     vData.currentLocation = collision.GetComponent<TData>();
+                }
+                if(vData.atLocation && tile == vData.target)
+                {
+                    vData.atLocation = false;
                 }
             }
         }

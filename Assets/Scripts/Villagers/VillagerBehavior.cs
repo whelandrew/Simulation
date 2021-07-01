@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using UnityEngine.UI;
+using UnityEngine;
 
 public class VillagerBehavior : MonoBehaviour
 {
@@ -6,13 +7,14 @@ public class VillagerBehavior : MonoBehaviour
     public Pathfinding pathing;
     public TileManager tManager;
     public BoxCollider2D bCollider;
+    public SpriteRenderer speechBubble;   
 
     public VillagerData vData;
     private int pathVal = 0;
 
-    public bool atLocation;
-    private bool atHome;
-    private bool atWork;
+    public GameObject villagerUI;
+    public Text villagerName;
+    public Text villagerStats;
 
     private void Update()
     {
@@ -20,6 +22,27 @@ public class VillagerBehavior : MonoBehaviour
         {            
             Behaviors();
         }
+
+        if(Input.GetMouseButtonDown(0))
+        {
+            if (villagerUI.activeSelf)
+            {
+                villagerUI.SetActive(false);
+            }
+        }
+    }
+
+    public void ShowStats()
+    {
+        villagerUI.SetActive(true);
+
+        villagerName.text = vData.FName + " " + vData.LName;
+
+        villagerStats.text = vData.Gender + "\n";
+        villagerStats.text += vData.job + "\n";
+        villagerStats.text += vData.homeLoc + "\n";
+        villagerStats.text += vData.job + " " + vData.jobLoc + "\n";
+        villagerStats.text += vData.goingTo + "\n";
     }
 
     private void Behaviors()
@@ -42,7 +65,9 @@ public class VillagerBehavior : MonoBehaviour
         }
         else
         {
-            GoToTownCenter();
+            //GoToTownCenter
+            SpeechBubble(gController.vController.speechBubbleHomeless);
+            GoTo(TileTypes.TownCenter);
         }
 
         //walk path
@@ -54,23 +79,53 @@ public class VillagerBehavior : MonoBehaviour
 
     private void MorningActions()
     {
-        GoHome();   
+        //GoHome
+        if (vData.hasHome)
+        {
+            SpeechBubble(gController.vController.speechBubbleHome);
+            GoTo(TileTypes.House);
+        }
+        else
+        {
+            SpeechBubble(gController.vController.speechBubbleIdle);
+            GoTo(TileTypes.TownCenter);
+        }
     }
 
     private void NoonActions()
     {
-        
+        if (vData.hasJob)
+        {
+            SpeechBubble(gController.vController.speechBubbleWork);
+            GoTo(TileTypes.Workshop);
+        }
+        else
+        {
+            SpeechBubble(gController.vController.speechBubbleIdle);
+            GoTo(TileTypes.TownCenter);
+        }
     }
 
     private void NightActions()
     {
-        
+        if (vData.hasHome)
+        {
+            SpeechBubble(gController.vController.speechBubbleHome);
+            GoTo(TileTypes.House);
+        }
+        else
+        {
+            GoTo(TileTypes.TownCenter);
+        }
     }
 
     private void WalkPath()
     {
+        if (vData.currentPath.Length < pathVal)
+            return;
+
         if (vData.currentPath.Length > 0)
-        {            
+        {
             transform.position = Vector3.MoveTowards(transform.position, vData.currentPath[pathVal], vData.speed * Time.deltaTime);
             
             if (transform.position == vData.currentPath[pathVal])
@@ -98,60 +153,42 @@ public class VillagerBehavior : MonoBehaviour
         vData.currentPath = new Vector3Int[0];
     }
 
-    private void GoToTownCenter()
+    private void GoTo(TileTypes typeLocation)
     {
-        if (!atLocation)
+        if (!vData.isMoving && !vData.atLocation && gController.vController.timeChange)
         {
-            if (!vData.isMoving)
-            {
-                vData.goingTo = TileTypes.TownCenter;
-                vData.isMoving = true;
-                vData.currentPath = pathing.FindPath(vData.currentLocation, tManager.GetOneTileOfType(TileTypes.TownCenter)).ToArray();
-            }
-        }
-    }
-
-    private void GoHome()
-    {
-        if (!atLocation)
-        {
-            if (!vData.isMoving)
-            {
-                vData.goingTo = TileTypes.House;
-                vData.isMoving = true;
-                vData.currentPath = pathing.FindPath(vData.currentLocation, tManager.FindTileData(vData.homeLoc)).ToArray();
-            }
-        }
-    }
-
-    private void GoToWork()
-    {
-        if(!atWork)
-        {
-            if (!vData.isMoving)
-            {
-                vData.isMoving = true;
-            }
-            //if (vData.currentPath.Length < 1)
-            //{
-               //vData.currentPath = pathing.FindPath(vData.currentLocation, tManager.FindTileData(vData.jobLoc)).ToArray();
-            //}
+            gController.vController.timeChange = false;
+            TData targetTile = tManager.GetOneTileOfType(typeLocation);
+            vData.target = targetTile;
+            vData.goingTo = typeLocation;
+            vData.isMoving = true;
+            vData.currentPath = new Vector3Int[0];
+            pathVal = 0;
+            vData.currentPath = pathing.FindPath(vData.currentLocation, targetTile).ToArray();
         }
     }
 
     public void AtHome()
     {
-        atHome = true;
-        atWork = false;
+        vData.atHome = true;
+        vData.atWork = false;
     }
 
     public void AtWork()
     {
-        atHome = false;
-        atWork = true;        
+        vData.atHome = false;
+        vData.atWork = true;        
     }
 
-    public void AtDestination()
+    private void SpeechBubble(Sprite newSprite)
     {
+        if (!speechBubble.gameObject.activeSelf)
+        {
+            speechBubble.gameObject.SetActive(true);
+        }
+        else
+        {
+            speechBubble.sprite = newSprite;
+        }
     }
 }

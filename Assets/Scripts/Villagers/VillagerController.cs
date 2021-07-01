@@ -12,15 +12,45 @@ public class VillagerController : MonoBehaviour
     private BoxCollider2D[] spawnPoints;
 
     public int villagerTotal;
+    public int homeTotal;
+
+    public bool timeChange;
+
+    public Sprite speechBubbleHome;
+    public Sprite speechBubbleWork;
+    public Sprite speechBubbleSleep;
+    public Sprite speechBubbleHomeless;
+    public Sprite speechBubbleActions;
+    public Sprite speechBubbleIdle;
 
     private void Awake()
     {
-        foreach(SpriteRenderer i in villagerCache.GetComponentsInChildren<SpriteRenderer>())
+        foreach(VillagerData i in villagerCache.GetComponentsInChildren<VillagerData>())
         {
             villagers.Add(i.gameObject);
         }
 
         spawnPoints = VillagerSpawnPoints.GetComponentsInChildren<BoxCollider2D>();
+    }
+
+    private void Update()
+    {
+        if(Input.GetMouseButtonDown(0))
+        {
+            VillagerInfo();
+        }
+    }
+
+    private void VillagerInfo()
+    {
+        RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), -Vector2.up);
+        if (hit.collider != null)
+        {
+            if (hit.collider.gameObject.tag == "Villager")
+            {                
+                hit.collider.GetComponent<VillagerBehavior>().ShowStats();             
+            }
+        }
     }
 
     public void Reset(int val)

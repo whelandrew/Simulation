@@ -19,9 +19,12 @@ public class BuildingController : MonoBehaviour
     private List<VillagerData> availableVillagers = new List<VillagerData>();
     private TData selectedBuilding;
 
+    public int assignedBuildingTotal;
+
 
     private void Start()
     {
+        assignButton.SetActive(false);
         AssignmentPanelContent.SetActive(false);
         BuildingUI.SetActive(false);
     }
@@ -29,6 +32,11 @@ public class BuildingController : MonoBehaviour
     {
         if(Input.GetMouseButtonDown(0))
         {
+            if (!gController.UIOn)
+            {                
+                GetBuildingDetails();
+            }
+
             GetBuildingDetails();
         }
     }
@@ -42,6 +50,7 @@ public class BuildingController : MonoBehaviour
             {
                 if (hit.collider.GetComponent<TData>().isBuilding)
                 {
+                    gController.SetUIOn(true);
                     BuildingUI.SetActive(true);
                     AssignmentPanelContent.SetActive(false);
                     BuildingInfo(hit.collider.GetComponent<TData>());
@@ -91,9 +100,24 @@ public class BuildingController : MonoBehaviour
                     }
                 }
             }
+            else if(tile.tileType == TileTypes.Workshop)
+            {
+                if(!tile.owned)
+                {
+                    if(!vData[i].hasJob && vData[i].hasHome)
+                    {
+                        if (!assignButton.activeSelf)
+                        {
+                            assignButton.SetActive(true);
+                        }
+                        availableVillagers.Add(vData[i]);
+                        assignmentType = TileTypes.Workshop;
+                    }
+                }
+            }
             else
             {
-
+                assignButton.SetActive(false);
             }
         }
     }
@@ -101,6 +125,10 @@ public class BuildingController : MonoBehaviour
     public void CreateAssignmentButtonFor()
     {
         AssignmentPanelContent.SetActive(true);
+        foreach (Button i in AssignmentPanelContent.GetComponentsInChildren<Button>())
+        {
+            GameObject.Destroy(i.gameObject);
+        }
 
         for (int i = 0; i < availableVillagers.Count; i++)
         {
@@ -125,7 +153,25 @@ public class BuildingController : MonoBehaviour
         {
             vData.hasHome = true;
             vData.homeLoc = selectedBuilding.pos;
-            vData.homeID = selectedBuilding.id;      
+            vData.homeID = selectedBuilding.id;
+            vData.goingTo = TileTypes.House;
+            vData.target = selectedBuilding;
+            vData.atLocation = false;
+
+            gController.vController.homeTotal++;
+        }
+
+        if (selectedBuilding.tileType == TileTypes.Workshop)
+        {
+            vData.hasJob = true;
+            vData.job = JobType.Carpenter;
+            vData.jobLoc = selectedBuilding.pos;
+            vData.jobID = selectedBuilding.id;
+            vData.goingTo = TileTypes.Workshop;
+            vData.target = selectedBuilding;
+            vData.atLocation = false;
+
+            assignedBuildingTotal++;
         }
 
         selectedBuilding.owned = true;
@@ -137,6 +183,7 @@ public class BuildingController : MonoBehaviour
             nTiles[i].owner = vData;
         }
 
+        assignButton.SetActive(false);
 
         BuildingInfo(selectedBuilding);
     }

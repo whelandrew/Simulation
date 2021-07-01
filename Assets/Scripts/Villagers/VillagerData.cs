@@ -21,11 +21,15 @@ public class VillagerData : MonoBehaviour
     public JobType job;
     public Vector3Int jobLoc;
     public int jobID;
+    public bool atWork;
 
     public bool hasHome;
     public Vector3Int homeLoc;
     public int homeID;
+    public bool atHome;
 
     public TData currentLocation;
     public TileTypes goingTo;
+    public TData target;
+    public bool atLocation;
 }

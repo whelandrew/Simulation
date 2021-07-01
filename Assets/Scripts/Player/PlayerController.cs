@@ -1,30 +1,40 @@
 ﻿using UnityEngine;
 
-public class PlayerController : MonoBehaviour
+public class playerController : MonoBehaviour
 {
-    private Rigidbody2D rBody;
+    public bool canControl;
 
-    public bool canControl = true;
+    public Rigidbody2D rBody;
+    public BoxCollider2D bCollider;
+    public SpriteRenderer sprite;
 
-    public Vector2 finalVelocity = Vector2.zero;
+    private int speed;
+    public int baseSpeed;
+
+    bool isWalking = false;
     private Vector2 direction = Vector2.zero;
-    private Vector2 moveDir = Vector2.zero;
-    private int facing = 1;
-    private bool isWalking = false;
+    Vector2 finalVelocity = Vector2.zero;
 
-    public float moveSpeed = 7f;
+    public KeyCode[] MappedKeys = new KeyCode[] { KeyCode.W, KeyCode.A, KeyCode.S, KeyCode.D, KeyCode.Space, KeyCode.LeftArrow, KeyCode.RightArrow, KeyCode.UpArrow, KeyCode.DownArrow };
+    private float inputTimer;
 
-    private void Start()
+    bool stopMovement;
+
+    void Start()
     {
-        rBody = GetComponent<Rigidbody2D>();
+        speed = baseSpeed;
     }
 
-    private void Update()
+    void Update()
     {
-        if(canControl)
+        if (canControl)
         {
-            Walking();
+            if (CanMove())
+            {
+                Movement();
+            }
         }
+
     }
 
     private void FixedUpdate()
@@ -32,37 +42,87 @@ public class PlayerController : MonoBehaviour
         rBody.velocity = finalVelocity;
     }
 
-    private void Walking()
+    private bool CanMove()
     {
-        if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow))
-        {
-            //up
-            moveDir = Vector2.up;
-        }
-        if (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow))
-        {
-            //down
-            moveDir = Vector2.down;
-        }
-        if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow))
-        {
-            //left
-            moveDir = Vector2.left;
-            facing = -1;
-        }
-        if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow))
-        {
-            //right
-            moveDir = Vector2.right;
-            facing = 1;
-        }       
+        inputTimer += 1f * Time.deltaTime;
 
-        if(!Input.anyKey)
+        if (!Input.anyKey)
         {
-            moveDir = Vector2.zero;
-        }    
-        
-        //play movement animations
-        finalVelocity = moveDir * moveSpeed;        
+            finalVelocity = Vector2.zero;
+            isWalking = false;
+            return false;
+        }
+        else
+        {
+            for (int i = 0; i < MappedKeys.Length; i++)
+            {
+                if (Input.GetKey(MappedKeys[i]))
+                {
+                    inputTimer = 0;
+                    isWalking = true;
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    private void Movement()
+    {
+        if (Input.GetKey(KeyCode.A))
+        {
+            direction = Vector2.left;
+        }
+        if (Input.GetKey(KeyCode.D))
+        {
+            direction = Vector2.right;
+        }
+        if (Input.GetKey(KeyCode.W))
+        {
+            direction = Vector2.up;
+        }
+        if (Input.GetKey(KeyCode.S))
+        {
+            direction = Vector2.down;
+        }
+
+        finalVelocity = direction * speed;
+
+        isWalking = true;
+    }
+
+    private void OnTriggerStay2D(Collider2D collision)
+    {
+        if (collision.tag == "Tile")
+        {
+            
+        }
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.tag == "Tile")
+        {
+            TData tile = collision.GetComponent<TData>();
+
+            if (tile.tileType != TileTypes.Road)
+            {
+                if(tile.tileType == TileTypes.Ground)
+                {
+                    speed = baseSpeed / 2;
+                }
+                else
+                {
+                    //stop movement
+                    speed = 0;
+                    isWalking = false;
+                }
+            }
+            else
+            {
+                speed = baseSpeed;
+            }    
+        }
     }
 }
