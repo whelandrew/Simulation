@@ -4,7 +4,7 @@ using UnityEngine;
 public class VillagerBehavior : MonoBehaviour
 {
     public GameboardController gController;
-    public Pathfinding pathing;
+    //public Pathfinding pathing;
     public TileManager tManager;
     public BoxCollider2D bCollider;
     public SpriteRenderer speechBubble;   
@@ -164,7 +164,7 @@ public class VillagerBehavior : MonoBehaviour
             vData.isMoving = true;
             vData.currentPath = new Vector3Int[0];
             pathVal = 0;
-            vData.currentPath = pathing.FindPath(vData.currentLocation, targetTile).ToArray();
+            vData.currentPath = gController.pathing.FindPath(vData.currentLocation, targetTile).ToArray();
         }
     }
 

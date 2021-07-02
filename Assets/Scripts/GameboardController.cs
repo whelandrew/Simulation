@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
+using System.Collections.Generic;
 
 //pipeline for controllers to communicate
 public class GameboardController : MonoBehaviour
@@ -9,7 +10,8 @@ public class GameboardController : MonoBehaviour
     public VillagerController vController;
     public BuildingController bController;
     public playerController pController;
-
+    public EnemyController eController;
+    public Pathfinding pathing;
 
     public Text populationTotal;
     public Text buildingTotal;
@@ -26,6 +28,10 @@ public class GameboardController : MonoBehaviour
 
     public bool UIOn;
 
+    public List<TData> tilesInRange = new List<TData>();
+
+    public GameObject[] spawnPoints;
+
     private void Start()
     {
         populationTotal.text = "Population : 0";
@@ -34,8 +40,9 @@ public class GameboardController : MonoBehaviour
         StartCoroutine(AdvanceTime());
 
         //remove after testing ends
-        vController.CreateVillager();
+        //vController.CreateVillager();
         pController.canControl = true;
+        eController.CreateEnemy();
     }
 
     private void Update()
@@ -97,4 +104,10 @@ public class GameboardController : MonoBehaviour
     {
         UIOn = isOn;
     }
+
+    public Vector2 GetSpawnPoint()
+    {
+        return spawnPoints[Random.Range(0, spawnPoints.Length - 1)].transform.position;
+    }
+
 }

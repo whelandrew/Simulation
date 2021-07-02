@@ -54,6 +54,12 @@ public class Pathfinding : MonoBehaviour
             tile.cameFrom = null;
         }
 
+        if(start == null)
+        {
+            Debug.LogError("start == null");
+            return null;
+        }
+
         start.gCost = 0;
         start.hCost = CalculateDistancecost(start, end);
         start.fCost = start.gCost + start.hCost;
@@ -75,36 +81,12 @@ public class Pathfinding : MonoBehaviour
             Vector3Int[] neighbors = cur.neighbors;
             if(cur.neighbors == null)
             {
-                Debug.LogWarning("cur.neighbors == null");
+                Debug.LogError("cur.neighbors == null");
                 return null; 
             }
 
-            for (int j = 0; j < neighbors.Length; j++)
-            {
-                TData nTile = tManager.FindTileData(neighbors[j]);
-                //detect which tiles are allowed to walk on
-                if(PathingAllowed(new TileTypes[] { TileTypes.Ground}, nTile))
-                {
-                    if (closedList.Contains(nTile))
-                    {
-                        continue;
-                    }
-
-                    int tentativeGCost = cur.gCost + CalculateDistancecost(cur, nTile);
-                    if (tentativeGCost < nTile.gCost)
-                    {
-                        nTile.cameFrom = cur;
-                        nTile.gCost = tentativeGCost;
-                        nTile.hCost = CalculateDistancecost(nTile, end);
-                        nTile.fCost = nTile.gCost + nTile.hCost;
-
-                        if (!openList.Contains(nTile))
-                        {
-                            openList.Add(nTile);
-                        }
-                    }
-                }
-            }
+            //TODO Fix pathing
+            AddToPath(cur, neighbors, end, TileTypes.Road);
         }
 
         //out of cycle. No path found
@@ -112,19 +94,47 @@ public class Pathfinding : MonoBehaviour
         return new List<Vector3Int>();
     }
 
-    public bool PathingAllowed(TileTypes[] blockedTypes, TData tile)
+    private void AddToPath(TData cur, Vector3Int[] neighbors, TData end, TileTypes allowedTile)
     {
-        for(int i=0;i<blockedTypes.Length;i++)
+        TData roadTile = null;
+        for (int i = 0; i < neighbors.Length; i++)
         {
-            if(tile.tileType==blockedTypes[i])
+            TData tile = tManager.FindTileData(neighbors[i]);
+            if (tile.tileType == allowedTile)
             {
-                return false;
+                roadTile = tile;
+                continue;
             }
         }
 
-        return true;
-    }
+        TData nTile = null;
+        if (roadTile != null)
+        {
+            nTile = roadTile;
+        }
 
+        if (nTile != null)
+        {
+            if (closedList.Contains(nTile))
+            {
+                return;
+            }
+
+            int tentativeGCost = cur.gCost + CalculateDistancecost(cur, nTile);
+            if (tentativeGCost < nTile.gCost)
+            {
+                nTile.cameFrom = cur;
+                nTile.gCost = tentativeGCost;
+                nTile.hCost = CalculateDistancecost(nTile, end);
+                nTile.fCost = nTile.gCost + nTile.hCost;
+
+                if (!openList.Contains(nTile))
+                {
+                    openList.Add(nTile);
+                }
+            }
+        }
+    }       
     private List<Vector3Int> CalculatePath(TData end)
     {
         List<Vector3Int> path = new List<Vector3Int>();

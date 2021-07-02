@@ -71,11 +71,6 @@ public class VillagerController : MonoBehaviour
         villagers[val].name = "Unused Villager";
     }
 
-    Vector2 GetSpawnPoint()
-    {        
-        return spawnPoints[Random.Range(0, spawnPoints.Length - 1)].transform.position;
-    }
-
     public void CreateVillager()
     {
         for(int i = 0; i < villagers.Count; i++) 
@@ -100,7 +95,7 @@ public class VillagerController : MonoBehaviour
                 sr.enabled = true;
 
                 villagers[i].name = vData.id;
-                villagers[i].transform.position = GetSpawnPoint();
+                villagers[i].transform.position = gController.GetSpawnPoint();
 
                 vData.pos = new Vector2Int((int)villagers[i].transform.position.x, (int)villagers[i].transform.position.y);                                
                 vData.currentLocation = gController.tManager.FindTileData(new Vector3Int((int)villagers[i].transform.position.x, (int)villagers[i].transform.position.y, 0));

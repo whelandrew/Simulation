@@ -10,6 +10,7 @@ public class BuildingController : MonoBehaviour
     public Text BuildingName;
     public Text BuildingDetails;
     public GameObject assignButton;
+    public Image BuildingImage;
 
     public GameObject AssignmentPanel;
     public GameObject AssignmentPanelContent;
@@ -42,18 +43,22 @@ public class BuildingController : MonoBehaviour
     }
 
     private void GetBuildingDetails()
-    {
+    {        
         RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), -Vector2.up);
         if (hit.collider != null)
         {
             if (hit.collider.gameObject.tag == "Tile")
             {
-                if (hit.collider.GetComponent<TData>().isBuilding)
+                TData tile = hit.collider.GetComponent<TData>();
+                if (gController.tilesInRange.Contains(tile))
                 {
-                    gController.SetUIOn(true);
-                    BuildingUI.SetActive(true);
-                    AssignmentPanelContent.SetActive(false);
-                    BuildingInfo(hit.collider.GetComponent<TData>());
+                    //if (tile.isBuilding)
+                    {
+                        gController.SetUIOn(true);
+                        BuildingUI.SetActive(true);
+                        AssignmentPanelContent.SetActive(false);
+                        BuildingInfo(hit.collider.GetComponent<TData>());
+                    }
                 }
             }
         }
@@ -65,6 +70,7 @@ public class BuildingController : MonoBehaviour
         BuildingName.text = tile.tileType.ToString();
         BuildingDetails.text = "";
         selectedBuilding = tile;
+        BuildingImage.sprite = gController.tManager.GetTileSprite(tile.tileType);
 
         if (tile.owned)
         {

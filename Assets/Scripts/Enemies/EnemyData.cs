@@ -1,13 +1,19 @@
 ﻿using UnityEngine;
 
-public class PlayerData : MonoBehaviour
+public class EnemyData : MonoBehaviour
 {
     public string id;
+    public Vector2Int pos;
+
+    public bool isMoving;
+    public bool isActive;
 
     public int speed;
 
     public string fName;
     public string lName;
+
+    public int gender;
 
     public bool slowed;
 

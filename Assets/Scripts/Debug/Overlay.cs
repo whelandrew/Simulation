@@ -17,6 +17,11 @@ public class Overlay : MonoBehaviour
     public GameboardController gController;
     public TileManager tileManager;
     public SpriteSelector sSelector;
+
+    public PlayerData pData;
+    public GameObject playerDataObject;
+    public Text playerDataText; 
+         
     void Start()
     {
         main = Camera.main;
@@ -28,13 +33,28 @@ public class Overlay : MonoBehaviour
             tileManagerReady = true;
             AssignParent();
         }
+
+        PlayerInfo();
     }
-    // Update is called once per frame
+    
     void FixedUpdate()
     {
         if (tileManagerReady)
         {
             GetTileInfo();
+        }
+    }
+
+    private void PlayerInfo()
+    {
+        if (pData != null)
+        {
+            playerDataText.text = "";
+            var fields = pData.GetType().GetFields();
+            foreach (var i in fields)
+            {
+                playerDataText.text += i.Name + " : " + i.GetValue(pData) + "\n";
+            }
         }
     }
 

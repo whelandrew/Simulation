@@ -14,11 +14,20 @@ public class TileManager : MonoBehaviour
 
     public int buildingTotal = 0;
 
+    public Sprite groundSprite;
+    public Sprite roadsprite;
+    public Sprite workshopSprite;
+    public Sprite homeSprite;
+    public Sprite riverSprite;
+    public Sprite treeSprite;
+    public Sprite townCenterSprite;
+    public Sprite defenseSprite;
+
     private void Start()
     {
         tileMaps = GridObject.GetComponentsInChildren<Tilemap>();
         CreateMap();
-    }
+    }    
 
     private void CreateMap()
     {
@@ -77,7 +86,7 @@ public class TileManager : MonoBehaviour
 
                     SpriteRenderer spriteRenderer = newTileObject.AddComponent<SpriteRenderer>();
                     Sprite sprite = tMap.GetSprite(tileData.pos);
-                    spriteRenderer.sprite = sprite;
+                    spriteRenderer.sprite = sprite;                    
 
                     tileObjects.Add(newTileObject);
                 }
@@ -498,5 +507,21 @@ public class TileManager : MonoBehaviour
         }
 
         return null;
+    }
+
+    public Sprite GetTileSprite(TileTypes type)
+    {
+        switch(type)
+        {
+            case TileTypes.Ground: return groundSprite;
+            case TileTypes.Forest: return treeSprite;
+            case TileTypes.Defense: return defenseSprite;
+            case TileTypes.River: return riverSprite;
+            case TileTypes.Road: return roadsprite;
+            case TileTypes.TownCenter: return townCenterSprite;
+            case TileTypes.Workshop: return workshopSprite;
+            case TileTypes.House: return homeSprite;
+            default: return null;
+        }
     }
 }
