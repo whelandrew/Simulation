@@ -97,7 +97,7 @@ public class Overlay : MonoBehaviour
     void AssignParent()
     {
         Transform[] tileParents = MapPieces.GetComponentsInChildren<Transform>();
-        List<GameObject> tileObjects = tileManager.tileObjects;
+        GameObject[] tileObjects = tileManager.tileObjects;
 
         foreach (GameObject tile in tileObjects)
         {
@@ -132,7 +132,7 @@ public class Overlay : MonoBehaviour
                         break;
                     case TileTypes.House:
                         foreach (Transform t in tileParents)
-                            if (t.gameObject.name.Contains("House")) tile.transform.parent = t;
+                            if (t.gameObject.name.Contains("Homes")) tile.transform.parent = t;
                         break;
                 }
             }

@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections.Generic;
 
 public class SpriteSelector : MonoBehaviour
 {
@@ -32,7 +31,7 @@ public class SpriteSelector : MonoBehaviour
 
     //dragNDraw
     public int drawCap = 10;
-    public List<GameObject> selectedTiles = new List<GameObject>();
+    public GameObject[] selectedTiles;
 
     private void Start()
     {
@@ -53,7 +52,7 @@ public class SpriteSelector : MonoBehaviour
             // mouse up
             if (Input.GetMouseButtonUp(0))
             {
-                if (usingDragNDraw && selectedTiles.Count>0)
+                if (usingDragNDraw && selectedTiles.Length > 0)
                 {
                     PlaceBuilding();
                 }
@@ -164,7 +163,7 @@ public class SpriteSelector : MonoBehaviour
         foundForBuilding = 0;
         if (!usingDragNDraw)
         {
-            selectedTiles = new List<GameObject>();
+            selectedTiles = new GameObject[allSpots.Length];
         }
         //find tile data   
         for (int i = 0; i < allSpots.Length; i++)
@@ -207,7 +206,7 @@ public class SpriteSelector : MonoBehaviour
                         foundForBuilding++;
                         if (allSpots[i].gameObject.name.Contains("Center"))
                         {
-                            selectedTiles.Add(square);
+                            selectedTiles[i] = square;
                         }
                         else
                         {
@@ -240,11 +239,11 @@ public class SpriteSelector : MonoBehaviour
         {
             TData tile = origin.GetComponent<TData>();
             canPlace = tManager.FindClosestNeighbor(tile, new TileTypes[] { TileTypes.Road });
-            if (selectedTiles.Count > 0)
+            if (selectedTiles.Length > 0)
             {
-                if (!selectedTiles[selectedTiles.Count - 1].name.Contains(tile.name))
+                if (!selectedTiles[selectedTiles.Length - 1].name.Contains(tile.name))
                 {
-                    canPlace = tManager.FindClosestNeighbor(tile, new TileTypes[] { TileTypes.Road }, selectedTiles[selectedTiles.Count - 1].name);
+                    canPlace = tManager.FindClosestNeighbor(tile, new TileTypes[] { TileTypes.Road }, selectedTiles[selectedTiles.Length - 1].name);
                 }
             }
         }
@@ -279,13 +278,32 @@ public class SpriteSelector : MonoBehaviour
             }
         }
     }
+
+    private GameObject[] SelectedTilesRemoveAt(GameObject[] tiles, GameObject val)
+    {
+        GameObject[] newArr = new GameObject[tiles.Length-1];
+
+        for(int i=0;i<tiles.Length;i++)
+        {
+            if(tiles[i] == val)
+            {
+                i++;
+            }
+            else
+            {
+                newArr[i] = tiles[i];
+            }
+        }
+
+        return newArr;
+    }
     
     private void DragNDraw()
     {
         Debug.Log("DragNDraw");
         if (usingDragNDraw && highlightedObject != null)
         {
-            if (selectedTiles.Count >= drawCap)
+            if (selectedTiles.Length >= drawCap)
             {
                 Debug.Log("Cap Reached");
                 SelectionCompleted();
@@ -298,18 +316,21 @@ public class SpriteSelector : MonoBehaviour
                 {
                     if (IsSelected(tile))
                     {
-                        if (selectedTiles[selectedTiles.Count - 1] != highlightedObject)
+                        if (selectedTiles[selectedTiles.Length - 1] != highlightedObject)
                         {
-                            selectedTiles[selectedTiles.Count - 1].GetComponent<SpriteRenderer>().color = Color.white;
-                            selectedTiles.RemoveAt(selectedTiles.Count - 1);
+                            selectedTiles[selectedTiles.Length - 1].GetComponent<SpriteRenderer>().color = Color.white;                            
+                            selectedTiles = SelectedTilesRemoveAt(selectedTiles, selectedTiles[selectedTiles.Length - 1]);
                         }
                     }
 
-                    if (!selectedTiles.Contains(highlightedObject))
+                    for(int i=0;i<selectedTiles.Length;i++)
                     {
-                        sRender.color = Color.white;
-                        sRender.sprite = tempRoadSpriteIcon;
-                        selectedTiles.Add(highlightedObject);
+                        if(!selectedTiles[i] == highlightedObject)
+                        {
+                            sRender.color = Color.white;
+                            sRender.sprite = tempRoadSpriteIcon;
+                            selectedTiles[i] = highlightedObject;
+                        }
                     }
                 }
             }
@@ -321,7 +342,7 @@ public class SpriteSelector : MonoBehaviour
         canPlace = false;
         foundForBuilding = 0;
         oneRoad = false;
-        selectedTiles = new List<GameObject>();
+        selectedTiles = new GameObject[100];
         isActive = false;
         selectionCompleted = false;
         usingDragNDraw = false;
@@ -345,6 +366,15 @@ public class SpriteSelector : MonoBehaviour
 
     private bool IsSelected(TData tileToCheck)
     {
-        return selectedTiles.Find(x => x.GetComponent<TData>().pos == tileToCheck.pos);
+        for(int i=0;i<selectedTiles.Length;i++)
+        {
+            if(selectedTiles[i].GetComponent<TData>().pos == tileToCheck.pos)
+            {
+                return true;
+            }
+                
+        }
+
+        return false;
     }
 }

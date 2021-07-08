@@ -32,4 +32,6 @@ public class VillagerData : MonoBehaviour
     public TileTypes goingTo;
     public TData target;
     public bool atLocation;
+
+    public TileTypes[] allowedTypes;
 }

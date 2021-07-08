@@ -6,7 +6,7 @@ public class VillagerController : MonoBehaviour
     public GameboardController gController;
 
     public GameObject villagerCache;
-    private List<GameObject> villagers = new List<GameObject>();
+    private GameObject[] villagers = new GameObject[100];
 
     public GameObject VillagerSpawnPoints;
     private BoxCollider2D[] spawnPoints;
@@ -23,11 +23,18 @@ public class VillagerController : MonoBehaviour
     public Sprite speechBubbleActions;
     public Sprite speechBubbleIdle;
 
+    
     private void Awake()
     {
+        int count = 0;
         foreach(VillagerData i in villagerCache.GetComponentsInChildren<VillagerData>())
         {
-            villagers.Add(i.gameObject);
+            villagers[count] = i.gameObject;
+            foreach(Transform j in i.transform)
+            {
+                j.gameObject.SetActive(false);
+            }
+            count++;
         }
 
         spawnPoints = VillagerSpawnPoints.GetComponentsInChildren<BoxCollider2D>();
@@ -40,7 +47,7 @@ public class VillagerController : MonoBehaviour
             VillagerInfo();
         }
     }
-
+    
     private void VillagerInfo()
     {
         RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), -Vector2.up);
@@ -59,6 +66,11 @@ public class VillagerController : MonoBehaviour
         SpriteRenderer sr = villagers[val].GetComponent<SpriteRenderer>();
         BoxCollider2D bCollider = villagers[val].GetComponent<BoxCollider2D>();
 
+        foreach(Transform i in villagers[val].transform)
+        {
+            i.gameObject.SetActive(false);
+        }
+
         vData.isActive = false;
         vData.FName = "";
         vData.LName = "";
@@ -73,14 +85,21 @@ public class VillagerController : MonoBehaviour
 
     public void CreateVillager()
     {
-        for(int i = 0; i < villagers.Count; i++) 
+        for(int i = 0; i < villagers.Length; i++) 
         {
             VillagerData vData = villagers[i].GetComponent<VillagerData>();
-            SpriteRenderer sr = villagers[i].GetComponent<SpriteRenderer>();
-            VillagerBehavior vB = villagers[i].GetComponent<VillagerBehavior>();
+            
             if (!vData.isActive)
             {
+                SpriteRenderer sr = villagers[i].GetComponent<SpriteRenderer>();
+                VillagerBehavior vB = villagers[i].GetComponent<VillagerBehavior>();
+                Transform[] children = villagers[i].GetComponentsInChildren<Transform>();
                 VillagerNames vNames = new VillagerNames();
+
+                for(int j=0;j<children.Length;j++)
+                {
+                    children[j].gameObject.SetActive(true);
+                }
 
                 vData.isActive = true;
                 vData.Gender = 0;
@@ -109,15 +128,15 @@ public class VillagerController : MonoBehaviour
         }
     }
 
-    public List<VillagerData> GetActiveVillagers()
+    public VillagerData[] GetActiveVillagers()
     {
-        List<VillagerData> actives = new List<VillagerData>();
-        for(int i=0;i<villagers.Count;i++)
+        VillagerData[] actives = new VillagerData[villagers.Length];
+        for(int i=0;i<villagers.Length;i++)
         {
             VillagerData vData = villagers[i].GetComponent<VillagerData>();
             if(vData.isActive)
             {
-                actives.Add(vData);
+                actives[i] = vData;
             }
         }
 

@@ -1,29 +1,64 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class EnemyController : MonoBehaviour
 {
     public GameboardController gController;
     public GameObject enemyCache;
-    private List<GameObject> enemies = new List<GameObject>();    
+    GameObject[] enemies = new GameObject[100];
 
     private void Awake()
     {
+        int count = 0;
         foreach(EnemyData i in enemyCache.GetComponentsInChildren<EnemyData>())
         {
-            enemies.Add(i.gameObject);
+            enemies[count] = i.gameObject;
+            foreach(Transform j in i.transform)            
+            {                
+                j.gameObject.SetActive(false);
+            }
+            count++;
         }
+    }
+    
+    public void Reset(int val)
+    {
+        EnemyData eData = enemies[val].GetComponent<EnemyData>();
+        SpriteRenderer sr = enemies[val].GetComponent<SpriteRenderer>();
+        BoxCollider2D bCollider = enemies[val].GetComponent<BoxCollider2D>();
+
+        foreach (Transform i in enemies[val].transform)
+        {
+            i.gameObject.SetActive(false);
+        }
+
+        eData.isActive = false;
+        eData.fName = "";
+        eData.lName = "";
+        eData.id = "";
+
+        sr.enabled = false;
+
+        bCollider.enabled = false;
+        eData.slowed = false;
+
+
+        enemies[val].name = "Unused Villager";
     }
 
     public void CreateEnemy()
     {
-        for( int i=0;i<enemies.Count;i++)
+        for( int i=0;i<enemies.Length;i++)
         {
-            EnemyData eData = enemies[i].GetComponent<EnemyData>();
-            EnemyBehavior eBehavior = enemies[i].GetComponent<EnemyBehavior>();
+            EnemyData eData = enemies[i].GetComponent<EnemyData>();            
             if(!eData.isActive)
-            {              
+            {
+                EnemyBehavior eBehavior = enemies[i].GetComponent<EnemyBehavior>();
+
+                foreach(Transform j in enemies[i].transform)
+                {
+                    j.gameObject.SetActive(true);
+                }
+
                 eData.id = eData.fName + eData.lName + i;
 
                 enemies[i].name = eData.id;
@@ -38,6 +73,14 @@ public class EnemyController : MonoBehaviour
                 eData.slowed = false;
 
                 eData.currentLoc = GetCurrentLocation(enemies[i].transform.position);
+
+                eData.allowedTypes = new TileTypes[] { TileTypes.Road, TileTypes.Ground };
+
+                eData.pData = gController.pController.pData;
+
+                eData.HP = 1;
+                eData.AC = 1;
+                eData.Agility = 2;
 
                 eBehavior.ActivateEnemy();
             }

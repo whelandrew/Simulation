@@ -4,7 +4,7 @@ using UnityEngine;
 public class VillagerBehavior : MonoBehaviour
 {
     public GameboardController gController;
-    //public Pathfinding pathing;
+    public Pathfinding pathing;
     public TileManager tManager;
     public BoxCollider2D bCollider;
     public SpriteRenderer speechBubble;   
@@ -70,10 +70,13 @@ public class VillagerBehavior : MonoBehaviour
             GoTo(TileTypes.TownCenter);
         }
 
-        //walk path
-        if (vData.currentPath.Length > 0)
+        if (vData.currentPath != null)
         {
-            WalkPath();
+            //walk path
+            if (vData.currentPath.Length > 0)
+            {
+                WalkPath();
+            }
         }
     }
 
@@ -144,6 +147,15 @@ public class VillagerBehavior : MonoBehaviour
 
     public void ActivateVillager()
     {
+        RaycastHit2D hit = Physics2D.Raycast(vData.pos, Vector2.down);
+        if(hit.collider != null)
+        {
+            if(hit.collider.tag == "Tile")
+            {
+                vData.currentLocation = hit.collider.GetComponent<TData>();
+            }
+        }
+
         vData.isActive = true;
         bCollider.enabled = true;
     }
@@ -164,7 +176,14 @@ public class VillagerBehavior : MonoBehaviour
             vData.isMoving = true;
             vData.currentPath = new Vector3Int[0];
             pathVal = 0;
-            vData.currentPath = gController.pathing.FindPath(vData.currentLocation, targetTile).ToArray();
+
+            TileTypes[] types = new TileTypes[vData.allowedTypes.Length+1];
+            for(int i=0;i<vData.allowedTypes.Length;i++)
+            {
+                types[i] = vData.allowedTypes[i];
+            }
+            types[types.Length-1] = targetTile.tileType;
+            vData.currentPath = gController.pathing.FindPath(vData.currentLocation, targetTile, types);
         }
     }
 

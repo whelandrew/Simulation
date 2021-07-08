@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class VillagerNames : MonoBehaviour
+public class VillagerNames
 {
     private string first_m = "Alek, Drake, William, Perin, Chris, Ceithen, Daddy, Yan, Sho, Taga";
     private string last_m = "Krominof, Arlin, Dog, Wolf, Boi, Johnson, Bear, Array";

@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
-using System.Collections.Generic;
 
 public class BuildingController : MonoBehaviour
 {
@@ -17,12 +16,11 @@ public class BuildingController : MonoBehaviour
     public Button AssignmentButton;
 
     private TileTypes assignmentType = TileTypes.None;
-    private List<VillagerData> availableVillagers = new List<VillagerData>();
+    private VillagerData[] availableVillagers;
     private TData selectedBuilding;
 
     public int assignedBuildingTotal;
-
-
+        
     private void Start()
     {
         assignButton.SetActive(false);
@@ -41,6 +39,7 @@ public class BuildingController : MonoBehaviour
             GetBuildingDetails();
         }
     }
+    
 
     private void GetBuildingDetails()
     {        
@@ -50,9 +49,9 @@ public class BuildingController : MonoBehaviour
             if (hit.collider.gameObject.tag == "Tile")
             {
                 TData tile = hit.collider.GetComponent<TData>();
-                if (gController.tilesInRange.Contains(tile))
+                for (int i = 0; i < gController.tilesInRange.Length; i++)
                 {
-                    //if (tile.isBuilding)
+                    if (gController.tilesInRange[i] == tile)
                     {
                         gController.SetUIOn(true);
                         BuildingUI.SetActive(true);
@@ -86,10 +85,10 @@ public class BuildingController : MonoBehaviour
 
     private void CreateAssignmentLists(TData tile)
     {
-        List<VillagerData> vData = gController.vController.GetActiveVillagers();
-        availableVillagers = new List<VillagerData>();
+        VillagerData[] vData = gController.vController.GetActiveVillagers();        
+        availableVillagers = new VillagerData[vData.Length];
 
-        for (int i = 0; i < vData.Count; i++)
+        for (int i = 0; i < vData.Length; i++)
         {
             if(tile.tileType == TileTypes.House)
             {
@@ -101,7 +100,8 @@ public class BuildingController : MonoBehaviour
                         {
                             assignButton.SetActive(true);
                         }
-                        availableVillagers.Add(vData[i]);
+
+                        availableVillagers[i] = vData[i];
                         assignmentType = TileTypes.House;
                     }
                 }
@@ -116,7 +116,7 @@ public class BuildingController : MonoBehaviour
                         {
                             assignButton.SetActive(true);
                         }
-                        availableVillagers.Add(vData[i]);
+                        availableVillagers[i] = vData[i];
                         assignmentType = TileTypes.Workshop;
                     }
                 }
@@ -133,10 +133,10 @@ public class BuildingController : MonoBehaviour
         AssignmentPanelContent.SetActive(true);
         foreach (Button i in AssignmentPanelContent.GetComponentsInChildren<Button>())
         {
-            GameObject.Destroy(i.gameObject);
+            Destroy(i.gameObject);
         }
 
-        for (int i = 0; i < availableVillagers.Count; i++)
+        for (int i = 0; i < availableVillagers.Length; i++)
         {
             VillagerData vData = availableVillagers[i];
 
@@ -182,15 +182,14 @@ public class BuildingController : MonoBehaviour
 
         selectedBuilding.owned = true;
         selectedBuilding.owner = vData;
-        List<TData> nTiles = gController.tManager.GetClosestNeighborsOfType(selectedBuilding, selectedBuilding.tileType);
-        for (int i = 0; i < nTiles.Count; i++)
+        TData[] nTiles = gController.tManager.GetClosestNeighborsOfType(selectedBuilding, selectedBuilding.tileType);
+        for (int i = 0; i < nTiles.Length; i++)
         {
             nTiles[i].owned = true;
             nTiles[i].owner = vData;
         }
 
         assignButton.SetActive(false);
-
         BuildingInfo(selectedBuilding);
     }
 }

@@ -9,6 +9,9 @@ public class EnemyData : MonoBehaviour
     public bool isActive;
 
     public int speed;
+    public int HP;
+    public int AC;
+    public int Agility;
 
     public string fName;
     public string lName;
@@ -19,4 +22,11 @@ public class EnemyData : MonoBehaviour
 
     public TData currentLoc;
     public Vector3Int[] currentPath;
+
+    public TileTypes[] allowedTypes;
+
+    public PlayerData pData;
+    public VillagerData vData;
+
+    public TData targetTile;
 }

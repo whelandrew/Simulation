@@ -16,13 +16,14 @@ public class TData : MonoBehaviour
     public int AC;
     public int footTraffic;
 
-    public Vector3Int[] neighbors;
+    public Vector3Int[] neighbors = new Vector3Int[8];
 
     //for pathfinding
     public int gCost;
     public int hCost;
     public int fCost;
     public TData cameFrom;
+    public int pathVal;
 
     //building details for onmouseover
     public bool isBuilding;

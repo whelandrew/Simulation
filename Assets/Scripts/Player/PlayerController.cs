@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections.Generic;
 
 public class playerController : MonoBehaviour
 {
@@ -8,6 +7,8 @@ public class playerController : MonoBehaviour
 
     public GameObject interactionRange;
     private SpriteRenderer[] interactionSprites;
+
+    private ArrayManager aManager = new ArrayManager();
 
     public Rigidbody2D rBody;
     public BoxCollider2D bCollider;
@@ -28,9 +29,10 @@ public class playerController : MonoBehaviour
     private float inputTimer=0;
 
     private int curPathVal = 0;
-
+    
     void Start()
-    {
+    {       
+
         baseSpeed = pData.speed;
         speed = baseSpeed;
 
@@ -59,7 +61,7 @@ public class playerController : MonoBehaviour
             }
         }
     }
-
+    
     private void FixedUpdate()
     {
         rBody.velocity = finalVelocity;
@@ -67,7 +69,7 @@ public class playerController : MonoBehaviour
 
     private void DetectInteractionSpots()
     {
-        gController.tilesInRange = new List<TData>();
+        gController.tilesInRange = new TData[interactionSprites.Length];
         for (int i = 0; i < interactionSprites.Length; i++)
         {
             RaycastHit2D hit = Physics2D.Raycast(interactionSprites[i].gameObject.transform.position, Vector2.down);
@@ -76,7 +78,7 @@ public class playerController : MonoBehaviour
                 if(hit.collider.tag == "Tile")
                 {
                     TData tile = hit.collider.GetComponent<TData>();
-                    gController.tilesInRange.Add(tile);
+                    gController.tilesInRange[i] = tile;
                 }
             }
         }
@@ -84,6 +86,7 @@ public class playerController : MonoBehaviour
 
     private void MoveTowards()
     {
+        /*
         Vector2 mPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         TData target = gController.tManager.FindTileData(new Vector3Int((int)mPos.x, (int)mPos.y, 0));
         if (target.tileType != TileTypes.Ground && target.tileType != TileTypes.Road)
@@ -96,11 +99,13 @@ public class playerController : MonoBehaviour
                     return;
                 }
 
-                if (neighbor.tileType == TileTypes.Ground || neighbor.tileType == TileTypes.Road)
+                List<TileTypes> types = new List<TileTypes>();
+                for(int j=0;j<pData.allowedTypes.Length;j++)
                 {
-                    pData.currentPath = pathing.FindPath(pData.currentLoc, neighbor).ToArray();
-                    return;
+                    types.Add(pData.allowedTypes[j]);
                 }
+                types.Add(target.tileType);
+                pData.currentPath = pathing.FindPath(pData.currentLoc, neighbor, types.ToArray()).ToArray();
             }            
         }
         else
@@ -111,6 +116,7 @@ public class playerController : MonoBehaviour
             }
             pData.currentPath = pathing.FindPath(pData.currentLoc, target).ToArray();
         }
+        */
     }
 
     private void WalkPath()

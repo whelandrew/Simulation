@@ -118,31 +118,31 @@ public class CManager : MonoBehaviour
 
     private void BuildDefense()
     {
-        tManager.UpdateTile(sSScript.selectedTiles.ToArray(), TileTypes.Defense);
+        tManager.UpdateTile(sSScript.selectedTiles, TileTypes.Defense);
         Reset();
     }
 
     private void BuildFarm()
     {
-        tManager.UpdateTile(sSScript.selectedTiles.ToArray(), TileTypes.Farm);
+        tManager.UpdateTile(sSScript.selectedTiles, TileTypes.Farm);
         Reset();
     }    
 
     private void BuildHouse()
     {
-        tManager.UpdateTile(sSScript.selectedTiles.ToArray(), TileTypes.House);
+        tManager.UpdateTile(sSScript.selectedTiles, TileTypes.House);
         Reset();
     }    
 
     private void BuildWorkshop()
     {        
-        tManager.UpdateTile(sSScript.selectedTiles.ToArray(), TileTypes.Workshop);
+        tManager.UpdateTile(sSScript.selectedTiles, TileTypes.Workshop);
         Reset();
     }
 
     private void BuildRoad()
     {
-        tManager.UpdateTile(sSScript.selectedTiles.ToArray(), TileTypes.Road);
+        tManager.UpdateTile(sSScript.selectedTiles, TileTypes.Road);
         Reset();
     }    
 }

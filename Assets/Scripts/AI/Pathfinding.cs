@@ -11,7 +11,7 @@ public class PathNode
     public int hCost;
     public int fCost;
 
-    public PathNode cameFromNode;
+    public PathNode cameFromNode;    
 
     public PathNode(int x, int y)
     {
@@ -31,24 +31,23 @@ public class Pathfinding : MonoBehaviour
     public const int MOVE_DIAGONAL_COST = 14;
 
     public TileManager tManager;
-    List<TData> alltiles = new List<TData>();
-    List<TData> openList = new List<TData>();
-    List<TData> closedList = new List<TData>();
+    private ArrayManager aManager = new ArrayManager();
 
-    public List<Vector3Int> FindPath(TData start, TData end)
+    TData[] allTiles = new TData[0];
+    TData[] openList = new TData[0];
+    TData[] closedList = new TData[0];
+    
+    private void Start()
     {
-        if (alltiles.Count < 1)
-        {
-            alltiles = tManager.GetAllTileData();
-        }
-
-        openList.Add(start);
-        closedList = new List<TData>();
-
+        allTiles = tManager.GetAllTileData();
+    }
+     
+    public Vector3Int[] FindPath(TData start, TData end, TileTypes[] allowedTypes)
+    {
         //initialize
-        for (int i = 0; i < alltiles.Count; i++)
+        for (int i = 0; i < allTiles.Length; i++)
         {
-            TData tile = alltiles[i].GetComponent<TData>();
+            TData tile = allTiles[i];
             tile.gCost = int.MaxValue;
             tile.fCost = tile.gCost + tile.hCost;
             tile.cameFrom = null;
@@ -60,13 +59,22 @@ public class Pathfinding : MonoBehaviour
             return null;
         }
 
+        openList = aManager.AddTData(openList, start);
         start.gCost = 0;
         start.hCost = CalculateDistancecost(start, end);
         start.fCost = start.gCost + start.hCost;
 
-        //cycle
-        while (openList.Count > 0)
+        if(end == null)
         {
+            Debug.LogError("end == null");
+            return null;
+        }
+        closedList = new TData[0];        
+
+        //cycle
+        while (openList.Length > 0)
+        {
+            openList = aManager.ResizeTData(openList);
             TData cur = GetLowestFCost(openList);
             if (cur == end)
             {
@@ -74,90 +82,100 @@ public class Pathfinding : MonoBehaviour
                 return CalculatePath(end);
             }
 
-            openList.Remove(cur);
-            closedList.Add(cur);
+            openList = aManager.RemoveTData(openList, cur);
+            closedList = aManager.AddTData(closedList, cur);
 
-            //search neighbors
-            Vector3Int[] neighbors = cur.neighbors;
-            if(cur.neighbors == null)
+            //search neighbors            
+            if (cur == null || cur.neighbors == null)
             {
+                //no way out!
                 Debug.LogError("cur.neighbors == null");
-                return null; 
+                return null;
             }
 
-            //TODO Fix pathing
-            AddToPath(cur, neighbors, end, TileTypes.Road);
+            //check all valid neighbor tiles            
+            for (int i = 0; i < cur.neighbors.Length; i++)
+            {
+                TData neighbor = tManager.FindTileData(cur.neighbors[i]);
+                if (!aManager.FindMatchingTData(closedList, neighbor))
+                {
+                    for (int j = 0; j < allowedTypes.Length; j++)
+                    {
+                        if (neighbor.tileType == allowedTypes[j])
+                        //if (neighbor.tileType == TileTypes.Road)
+                        {
+                            int tentativeGCost = cur.gCost + CalculateDistancecost(cur, neighbor);
+                            if (tentativeGCost < neighbor.gCost)
+                            {
+                                neighbor.cameFrom = cur;
+                                neighbor.gCost = tentativeGCost;
+                                neighbor.hCost = CalculateDistancecost(neighbor, end);
+                                neighbor.fCost = neighbor.gCost + neighbor.hCost;
+
+                                if (!aManager.FindMatchingTData(openList, neighbor))
+                                {
+                                    openList = aManager.AddTData(openList, neighbor);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         //out of cycle. No path found
         Debug.LogWarning("No Path Found");
-        return new List<Vector3Int>();
+        return null;
     }
 
-    private void AddToPath(TData cur, Vector3Int[] neighbors, TData end, TileTypes allowedTile)
+    private Vector3Int[] CalculatePath(TData end)
     {
-        TData roadTile = null;
-        for (int i = 0; i < neighbors.Length; i++)
-        {
-            TData tile = tManager.FindTileData(neighbors[i]);
-            if (tile.tileType == allowedTile)
-            {
-                roadTile = tile;
-                continue;
-            }
-        }
+        Vector3Int[] path = new Vector3Int[100];
+        path[0] = end.pos;
 
-        TData nTile = null;
-        if (roadTile != null)
-        {
-            nTile = roadTile;
-        }
-
-        if (nTile != null)
-        {
-            if (closedList.Contains(nTile))
-            {
-                return;
-            }
-
-            int tentativeGCost = cur.gCost + CalculateDistancecost(cur, nTile);
-            if (tentativeGCost < nTile.gCost)
-            {
-                nTile.cameFrom = cur;
-                nTile.gCost = tentativeGCost;
-                nTile.hCost = CalculateDistancecost(nTile, end);
-                nTile.fCost = nTile.gCost + nTile.hCost;
-
-                if (!openList.Contains(nTile))
-                {
-                    openList.Add(nTile);
-                }
-            }
-        }
-    }       
-    private List<Vector3Int> CalculatePath(TData end)
-    {
-        List<Vector3Int> path = new List<Vector3Int>();
-        path.Add(end.pos);
         TData cur = end;
-        while(cur.cameFrom != null)
+        for (int i = 1; i < path.Length; i++)
         {
-            path.Add(cur.cameFrom.pos);
-            cur = cur.cameFrom;
+            if (cur.cameFrom != null)
+            {
+                path[i] = cur.cameFrom.pos;
+                cur = cur.cameFrom;
+            }
         }
-        path.Reverse();
 
-        return path;
+        int count = 0;
+        for (int i = 0; i < path.Length; i++)
+        {
+            if (path[i] != null)
+            {
+                count++;
+            }
+        }
+        Vector3Int[] finalPath = new Vector3Int[count];
+
+        count = 0;
+        for (int i = finalPath.Length - 1; i >= 0; i--)
+        {
+            if (path[count] != null)
+            {
+                finalPath[i] = path[count];
+            }
+            count++;
+        }
+        return finalPath;
     }
-
-    private TData GetLowestFCost(List<TData> list)
+    
+    private TData GetLowestFCost(TData[] list)
     {
         TData lowestCost = list[0];
-        for (int i = 0; i < list.Count; i++)
+        for (int i = 0; i < list.Length; i++)
         {
-            if (list[i].fCost < lowestCost.fCost)
+            if (list[i] != null)
             {
-                lowestCost = list[i];
+                if (list[i].fCost < lowestCost.fCost)
+                {
+                    lowestCost = list[i];
+                }
             }
         }
 

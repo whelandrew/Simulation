@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
-using System.Collections.Generic;
 
 //pipeline for controllers to communicate
 public class GameboardController : MonoBehaviour
@@ -28,7 +27,8 @@ public class GameboardController : MonoBehaviour
 
     public bool UIOn;
 
-    public List<TData> tilesInRange = new List<TData>();
+    //public List<TData> tilesInRange = new List<TData>();
+    public TData[] tilesInRange;
 
     public GameObject[] spawnPoints;
 
@@ -40,9 +40,9 @@ public class GameboardController : MonoBehaviour
         StartCoroutine(AdvanceTime());
 
         //remove after testing ends
-        //vController.CreateVillager();
-        pController.canControl = true;
-        eController.CreateEnemy();
+        vController.CreateVillager();
+        //pController.canControl = true;
+        //eController.CreateEnemy();
     }
 
     private void Update()
