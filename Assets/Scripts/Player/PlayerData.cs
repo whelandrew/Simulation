@@ -13,5 +13,6 @@ public class PlayerData : MonoBehaviour
 
     public TData currentLoc;
     public Vector3Int[] currentPath;
+    public TileTypes tileType = TileTypes.Player;
     public TileTypes[] allowedTypes = new TileTypes[] { TileTypes.Road, TileTypes.Road };
 }

@@ -63,25 +63,7 @@ public class VillagerController : MonoBehaviour
 
     public void Reset(int val)
     {
-        VillagerData vData = villagers[val].GetComponent<VillagerData>();
-        SpriteRenderer sr = villagers[val].GetComponent<SpriteRenderer>();
-        BoxCollider2D bCollider = villagers[val].GetComponent<BoxCollider2D>();
-
-        foreach(Transform i in villagers[val].transform)
-        {
-            i.gameObject.SetActive(false);
-        }
-
-        vData.isActive = false;
-        vData.FName = "";
-        vData.LName = "";
-        vData.id = "";
-
-        sr.enabled = false;
-
-        bCollider.enabled = false;
-
-        villagers[val].name = "Unused Villager";
+        villagers[val].GetComponent<VillagerBehavior>().Reset();
     }
 
     public void CreateVillager()
@@ -145,5 +127,19 @@ public class VillagerController : MonoBehaviour
         }
 
         return actives;
+    }
+
+    public VillagerData FindVillager(string targetID)
+    {
+        for(int i=0; i<villagers.Length;i++)
+        {
+            VillagerData data = villagers[i].GetComponent<VillagerData>();
+            if(data.id == targetID)
+            {
+                return data;
+            }
+        }
+
+        return null;
     }
 }

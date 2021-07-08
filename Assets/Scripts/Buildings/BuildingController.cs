@@ -33,9 +33,7 @@ public class BuildingController : MonoBehaviour
             if (!gController.UIOn)
             {                
                 GetBuildingDetails();
-            }
-
-            GetBuildingDetails();
+            }            
         }
     }
     
@@ -48,9 +46,9 @@ public class BuildingController : MonoBehaviour
             if (hit.collider.gameObject.tag == "Tile")
             {
                 TData tile = hit.collider.GetComponent<TData>();
-                for (int i = 0; i < gController.tilesInRange.Length; i++)
+                //for (int i = 0; i < gController.tilesInRange.Length; i++)
                 {
-                    if (gController.tilesInRange[i] == tile)
+                    //if (gController.tilesInRange[i] == tile)
                     {
                         gController.SetUIOn(true);
                         BuildingUI.SetActive(true);
@@ -142,19 +140,21 @@ public class BuildingController : MonoBehaviour
         {
             VillagerData vData = availableVillagers[i];
 
-            Button newButton = Instantiate(AssignmentButton) as Button;
+            Button newButton = Instantiate(AssignmentButton);
             Text bText = newButton.GetComponentInChildren<Text>();
             bText.text = vData.FName + " " + vData.LName;
 
             newButton.gameObject.name = bText.text;
-            newButton.transform.parent = AssignmentPanelContent.transform;
+            newButton.transform.SetParent(AssignmentPanelContent.transform, false);
 
-            newButton.onClick.AddListener(delegate { AssignBuildingTo(vData); });            
+            newButton.onClick.AddListener(delegate { AssignBuildingTo(vData.id); });
         }
     }
 
-    public void AssignBuildingTo(VillagerData vData)
+    public void AssignBuildingTo(string villagerID)
     {
+        Debug.Log("AssignBuilgingTo");
+        VillagerData vData = gController.vController.FindVillager(villagerID);
         AssignmentPanel.SetActive(false);
 
         if (selectedBuilding.tileType == TileTypes.House)
@@ -162,28 +162,25 @@ public class BuildingController : MonoBehaviour
             vData.hasHome = true;
             vData.homeLoc = selectedBuilding.pos;
             vData.homeID = selectedBuilding.id;
-            vData.goingTo = TileTypes.House;
-            vData.target = selectedBuilding;
             vData.atLocation = false;
 
             gController.vController.homeTotal++;
         }
-
+        else
         if (selectedBuilding.tileType == TileTypes.Workshop)
         {
             vData.hasJob = true;
             vData.job = JobType.Carpenter;
             vData.jobLoc = selectedBuilding.pos;
-            vData.jobID = selectedBuilding.id;
-            vData.goingTo = TileTypes.Workshop;
-            vData.target = selectedBuilding;
-            vData.atLocation = false;
+            vData.jobID = selectedBuilding.id;            
 
             assignedBuildingTotal++;
         }
 
-        selectedBuilding.owned = true;
-        selectedBuilding.owner = vData;
+        vData.goingTo = selectedBuilding.tileType;
+        vData.target = selectedBuilding;
+        vData.atLocation = false;
+        
         TData[] nTiles = gController.tManager.GetClosestNeighborsOfType(selectedBuilding, selectedBuilding.tileType);
         for (int i = 0; i < nTiles.Length; i++)
         {
@@ -191,6 +188,8 @@ public class BuildingController : MonoBehaviour
             nTiles[i].owner = vData;
         }
 
+        selectedBuilding.owned = true;
+        selectedBuilding.owner = vData;
         assignButton.SetActive(false);
         BuildingInfo(selectedBuilding);
     }

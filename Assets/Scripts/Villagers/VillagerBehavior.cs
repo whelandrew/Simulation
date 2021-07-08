@@ -6,8 +6,8 @@ public class VillagerBehavior : MonoBehaviour
     public GameboardController gController;
     public Pathfinding pathing;
     public TileManager tManager;
-    public BoxCollider2D bCollider;
-    public SpriteRenderer speechBubble;   
+    public GameObject footCollider;
+    public SpriteRenderer speechBubble;
 
     public VillagerData vData;
     private int pathVal = 0;
@@ -163,12 +163,24 @@ public class VillagerBehavior : MonoBehaviour
         }
 
         vData.isActive = true;
-        bCollider.enabled = true;
+        footCollider.SetActive(true);
     }
+    public void Reset()
+    {        
+        SpriteRenderer sr = GetComponent<SpriteRenderer>();
+        GameObject footCollider = GetComponentInChildren<BoxCollider2D>().gameObject;
 
-    private void Reset()
-    {
         vData.currentPath = new Vector3Int[0];
+        vData.isActive = false;
+        vData.FName = "";
+        vData.LName = "";
+        vData.id = "";
+
+        sr.enabled = false;
+
+        footCollider.SetActive(false);
+
+        gameObject.name = "Unused Villager";
     }
 
     private void GoTo(TileTypes typeLocation)
@@ -183,12 +195,13 @@ public class VillagerBehavior : MonoBehaviour
             vData.currentPath = new Vector3Int[0];
             pathVal = 0;
 
-            TileTypes[] types = new TileTypes[vData.allowedTypes.Length+1];
+            TileTypes[] types = new TileTypes[vData.allowedTypes.Length+2];
             for(int i=0;i<vData.allowedTypes.Length;i++)
             {
                 types[i] = vData.allowedTypes[i];
             }
             types[types.Length-1] = targetTile.tileType;
+            types[types.Length - 2] = vData.currentLocation.tileType;
             vData.currentPath = gController.pathing.FindPath(vData.currentLocation, targetTile, types);
         }
     }

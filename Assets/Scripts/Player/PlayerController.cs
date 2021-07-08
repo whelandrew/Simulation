@@ -35,7 +35,7 @@ public class playerController : MonoBehaviour
         baseSpeed = pData.speed;
         speed = baseSpeed;
 
-        interactionSprites = interactionRange.GetComponentsInChildren<SpriteRenderer>();
+        //interactionSprites = interactionRange.GetComponentsInChildren<SpriteRenderer>();
     }
 
     void Update()
@@ -48,7 +48,7 @@ public class playerController : MonoBehaviour
 
                 WalkPath();
 
-                DetectInteractionSpots();
+                //DetectInteractionSpots();
 
                 if (Input.GetMouseButtonDown(0))
                 {
@@ -71,6 +71,7 @@ public class playerController : MonoBehaviour
         gController.tilesInRange = new TData[interactionSprites.Length];
         for (int i = 0; i < interactionSprites.Length; i++)
         {
+            interactionSprites[i].color = Color.clear;
             RaycastHit2D hit = Physics2D.Raycast(interactionSprites[i].gameObject.transform.position, Vector2.down);
             if(hit.collider != null)
             {
@@ -78,6 +79,7 @@ public class playerController : MonoBehaviour
                 {
                     TData tile = hit.collider.GetComponent<TData>();
                     gController.tilesInRange[i] = tile;
+                    interactionSprites[i].color = new Color(0, 1f, 0, .3f);
                 }
             }
         }

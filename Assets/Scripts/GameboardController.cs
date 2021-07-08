@@ -27,7 +27,6 @@ public class GameboardController : MonoBehaviour
 
     public bool UIOn;
 
-    //public List<TData> tilesInRange = new List<TData>();
     public TData[] tilesInRange;
 
     public GameObject[] spawnPoints;

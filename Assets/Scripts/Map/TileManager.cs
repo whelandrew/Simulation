@@ -6,6 +6,8 @@ using System.Collections;
 
 public class TileManager : MonoBehaviour
 {
+
+    ArrayManager aManager = new ArrayManager();
     public bool finishedLoading = false;
     public Grid GridObject;
     private Tilemap[] tileMaps;
@@ -385,19 +387,19 @@ public class TileManager : MonoBehaviour
     public TData[] GetClosestNeighborsOfType(TData curTile, TileTypes tileTypeToFind)
     {
         TData[] foundTiles = new TData[curTile.neighbors.Length];
-        for(int i=0;i<curTile.neighbors.Length;i++)
+        for (int i = 0; i < curTile.neighbors.Length; i++)
         {
             TData tile = FindTileData(curTile.neighbors[i]);
-            if(tile != null)
+            if (tile != null)
             {
-                if(tile.tileType == tileTypeToFind && !tile.owned)
+                if (tile.tileType == tileTypeToFind && !tile.owned)
                 {
                     foundTiles[i] = tile;
                 }
             }
         }
 
-        return foundTiles;
+        return aManager.ResizeTData(foundTiles);
     }
     public GameObject[] RetrieveTileObjects(Vector3Int[] tilePos)
     {

@@ -20,7 +20,9 @@ public class Overlay : MonoBehaviour
 
     public PlayerData pData;
     public GameObject playerDataObject;
-    public Text playerDataText; 
+    public Text playerDataText;
+
+    public VillagerController vController;
          
     void Start()
     {
@@ -35,6 +37,8 @@ public class Overlay : MonoBehaviour
         }
 
         PlayerInfo();
+
+        //VillagerPath();
     }
     
     void FixedUpdate()
@@ -42,6 +46,24 @@ public class Overlay : MonoBehaviour
         if (tileManagerReady)
         {
             GetTileInfo();
+        }
+    }
+
+    private void VillagerPath()
+    {
+        foreach (VillagerData v in vController.villagerCache.GetComponentsInChildren<VillagerData>())
+        {            
+            if (v.currentPath.Length > 0)
+            {
+                GameObject newObj = new GameObject();
+                newObj.name = "Villager Path";
+                LineRenderer newLine = newObj.AddComponent<LineRenderer>();
+                newLine.positionCount = v.currentPath.Length;
+                for (int i = 0; i < v.currentPath.Length; i++)
+                {
+                    newLine.SetPosition(i, v.currentPath[i]);
+                }
+            }
         }
     }
 

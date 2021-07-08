@@ -100,7 +100,6 @@ public class Pathfinding : MonoBehaviour
                     for (int j = 0; j < allowedTypes.Length; j++)
                     {
                         if (neighbor.tileType == allowedTypes[j])
-                        //if (neighbor.tileType == TileTypes.Road)
                         {
                             int tentativeGCost = cur.gCost + CalculateDistancecost(cur, neighbor);
                             if (tentativeGCost < neighbor.gCost)
@@ -169,6 +168,18 @@ public class Pathfinding : MonoBehaviour
     private TData GetLowestFCost(TData[] list)
     {
         TData lowestCost = list[0];
+        if(lowestCost == null)
+        {
+            list = aManager.ResizeTData(list);
+            lowestCost = list[0];
+        }
+
+        if(lowestCost == null)
+        {
+            Debug.Log("lowestCost == null");
+            return null;
+        }
+
         for (int i = 0; i < list.Length; i++)
         {
             if (list[i] != null)

@@ -50292,6 +50292,11 @@ PrefabInstance:
       propertyPath: villagerStats
       value: 
       objectReference: {fileID: 1466850762}
+    - target: {fileID: 1216646688115285368, guid: c5af4225602f45549aba2c8322328a66,
+        type: 3}
+      propertyPath: footCollider
+      value: 
+      objectReference: {fileID: 1216646687424070867}
     - target: {fileID: 3390492459881605463, guid: c5af4225602f45549aba2c8322328a66,
         type: 3}
       propertyPath: m_SortingOrder
@@ -50404,6 +50409,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c5af4225602f45549aba2c8322328a66, type: 3}
+--- !u!1 &1216646687424070867 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1216646687583283241, guid: c5af4225602f45549aba2c8322328a66,
+    type: 3}
+  m_PrefabInstance: {fileID: 1216646687424070866}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1373834145588788265
 PrefabInstance:
   m_ObjectHideFlags: 0
