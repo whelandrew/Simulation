@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
-
 public class BuildingController : MonoBehaviour
 {
     public GameboardController gController;
@@ -94,15 +93,18 @@ public class BuildingController : MonoBehaviour
             {
                 if(!tile.owned)
                 {
-                    if(!vData[i].hasHome)
+                    if (vData[i] != null)
                     {
-                        if (!assignButton.activeSelf)
+                        if (!vData[i].hasHome)
                         {
-                            assignButton.SetActive(true);
-                        }
+                            if (!assignButton.activeSelf)
+                            {
+                                assignButton.SetActive(true);
+                            }
 
-                        availableVillagers[i] = vData[i];
-                        assignmentType = TileTypes.House;
+                            availableVillagers[i] = vData[i];
+                            assignmentType = TileTypes.House;
+                        }
                     }
                 }
             }

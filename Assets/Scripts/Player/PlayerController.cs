@@ -31,8 +31,7 @@ public class playerController : MonoBehaviour
     private int curPathVal = 0;
     
     void Start()
-    {       
-
+    {   
         baseSpeed = pData.speed;
         speed = baseSpeed;
 

@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class PathNode
 {
@@ -148,7 +146,10 @@ public class Pathfinding : MonoBehaviour
         {
             if (path[i] != null)
             {
-                count++;
+                if (path[i] != Vector3Int.zero)
+                {
+                    count++;
+                }
             }
         }
         Vector3Int[] finalPath = new Vector3Int[count];
@@ -156,7 +157,7 @@ public class Pathfinding : MonoBehaviour
         count = 0;
         for (int i = finalPath.Length - 1; i >= 0; i--)
         {
-            if (path[count] != null)
+            if (path[count] != null && path[count] != Vector3Int.zero)
             {
                 finalPath[i] = path[count];
             }

@@ -41,7 +41,7 @@ public class GameboardController : MonoBehaviour
 
         //remove after testing ends
         vController.CreateVillager();
-        //pController.canControl = true;
+        pController.canControl = true;
         //eController.CreateEnemy();
     }
 

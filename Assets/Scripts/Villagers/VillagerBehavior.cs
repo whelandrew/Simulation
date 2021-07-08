@@ -122,6 +122,12 @@ public class VillagerBehavior : MonoBehaviour
         }
     }
 
+    public void StopWalking()
+    {
+        vData.currentPath = new Vector3Int[0];
+        vData.isMoving = false;
+    }
+
     private void WalkPath()
     {
         if (vData.currentPath.Length < pathVal)

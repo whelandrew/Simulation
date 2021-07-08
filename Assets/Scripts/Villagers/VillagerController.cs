@@ -6,7 +6,7 @@ public class VillagerController : MonoBehaviour
     public GameboardController gController;
 
     public GameObject villagerCache;
-    private GameObject[] villagers = new GameObject[100];
+    private GameObject[] villagers = new GameObject[0];
 
     public GameObject VillagerSpawnPoints;
     private BoxCollider2D[] spawnPoints;
@@ -27,7 +27,8 @@ public class VillagerController : MonoBehaviour
     private void Awake()
     {
         int count = 0;
-        foreach(VillagerData i in villagerCache.GetComponentsInChildren<VillagerData>())
+        villagers = new GameObject[villagerCache.GetComponentsInChildren<VillagerData>().Length];
+        foreach (VillagerData i in villagerCache.GetComponentsInChildren<VillagerData>())
         {
             villagers[count] = i.gameObject;
             foreach(Transform j in i.transform)
@@ -133,10 +134,13 @@ public class VillagerController : MonoBehaviour
         VillagerData[] actives = new VillagerData[villagers.Length];
         for(int i=0;i<villagers.Length;i++)
         {
-            VillagerData vData = villagers[i].GetComponent<VillagerData>();
-            if(vData.isActive)
+            if (villagers[i] != null)
             {
-                actives[i] = vData;
+                VillagerData vData = villagers[i].GetComponent<VillagerData>();
+                if (vData.isActive)
+                {
+                    actives[i] = vData;
+                }
             }
         }
 
