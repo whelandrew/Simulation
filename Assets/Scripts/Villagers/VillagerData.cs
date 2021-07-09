@@ -34,4 +34,10 @@ public class VillagerData : MonoBehaviour
     public bool atLocation;
 
     public TileTypes[] allowedTypes;
+
+
+    public int mood;
+    public int AC;
+    public int HP;
+    public int AGI;
 }

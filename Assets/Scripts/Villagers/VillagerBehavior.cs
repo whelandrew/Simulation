@@ -9,6 +9,8 @@ public class VillagerBehavior : MonoBehaviour
     public GameObject footCollider;
     public SpriteRenderer speechBubble;
 
+    public MoodSprites moodSprites;
+
     public VillagerData vData;
     private int pathVal = 0;
 
@@ -16,11 +18,16 @@ public class VillagerBehavior : MonoBehaviour
     public Text villagerName;
     public Text villagerStats;
 
+    public bool freezeMovement;
+
     private void Update()
     {
         if (vData.isActive)
-        {            
-            Behaviors();
+        {
+            if (!freezeMovement)
+            {
+                Behaviors();
+            }
         }
 
         if(Input.GetMouseButtonDown(0))
@@ -66,7 +73,7 @@ public class VillagerBehavior : MonoBehaviour
         else
         {
             //GoToTownCenter
-            SpeechBubble(gController.vController.speechBubbleHomeless);
+            SpeechBubble(1);
             GoTo(TileTypes.TownCenter);
         }
 
@@ -75,7 +82,10 @@ public class VillagerBehavior : MonoBehaviour
             //walk path
             if (vData.currentPath.Length > 0)
             {
-                WalkPath();
+                if (!freezeMovement)
+                {
+                    WalkPath();
+                }
             }
         }
     }
@@ -85,12 +95,12 @@ public class VillagerBehavior : MonoBehaviour
         //GoHome
         if (vData.hasHome)
         {
-            SpeechBubble(gController.vController.speechBubbleHome);
+            SpeechBubble(2);
             GoTo(TileTypes.House);
         }
         else
         {
-            SpeechBubble(gController.vController.speechBubbleIdle);
+            SpeechBubble(0);
             GoTo(TileTypes.TownCenter);
         }
     }
@@ -99,12 +109,12 @@ public class VillagerBehavior : MonoBehaviour
     {
         if (vData.hasJob)
         {
-            SpeechBubble(gController.vController.speechBubbleWork);
+            SpeechBubble(3);
             GoTo(TileTypes.Workshop);
         }
         else
         {
-            SpeechBubble(gController.vController.speechBubbleIdle);
+            SpeechBubble(0);
             GoTo(TileTypes.TownCenter);
         }
     }
@@ -113,7 +123,7 @@ public class VillagerBehavior : MonoBehaviour
     {
         if (vData.hasHome)
         {
-            SpeechBubble(gController.vController.speechBubbleHome);
+            SpeechBubble(2);
             GoTo(TileTypes.House);
         }
         else
@@ -218,15 +228,17 @@ public class VillagerBehavior : MonoBehaviour
         vData.atWork = true;        
     }
 
-    private void SpeechBubble(Sprite newSprite)
+    private void SpeechBubble(int actionNum)
     {
         if (!speechBubble.gameObject.activeSelf)
         {
             speechBubble.gameObject.SetActive(true);
         }
-        else
-        {
-            speechBubble.sprite = newSprite;
-        }
+
+        speechBubble.sprite = moodSprites.VillagerActionSprites(actionNum);
+    }    
+    public void CalculateMood()
+    {
+        speechBubble.sprite = moodSprites.VillagerMoodSprites(0);
     }
 }

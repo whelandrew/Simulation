@@ -6,7 +6,6 @@ using System.Collections;
 
 public class TileManager : MonoBehaviour
 {
-
     ArrayManager aManager = new ArrayManager();
     public bool finishedLoading = false;
     public Grid GridObject;
@@ -82,40 +81,13 @@ public class TileManager : MonoBehaviour
         }
         tileObjects = finalSet;
 
+        if(tileMaps.Length >0)
+        {
+            GridObject.gameObject.SetActive(false);
+        }
+
         Debug.Log(tileObjects.Length);
         Debug.Log("Tilemaps Sorted");
-    }
-
-
-    private void UpdateTile(Tilemap tMap)
-    {
-        BoundsInt bounds = tMap.cellBounds;
-        TileBase[] allTiles = tMap.GetTilesBlock(bounds);
-
-        for (int x = 0; x < bounds.size.x; x++)
-        {
-            for (int y = 0; y < bounds.size.y; y++)
-            {
-                TileBase tile = allTiles[x + y * bounds.size.x];
-                Vector3Int tilePos = new Vector3Int(x - (MaxMapSize.x - 1), y - (MaxMapSize.y + 1), 0);
-                TData tData = FindTileData(tilePos);
-                if (tData != null)
-                {
-                    Debug.Log(tData);
-                    SpriteRenderer spriteRenderer = tData.gameObject.GetComponent<SpriteRenderer>();
-
-                    tData.id = x + y;
-                    tData.name = (tMap.gameObject.name + tile.name + (x).ToString() + (y).ToString());
-                    tData.tileType = AssignTileType(tData);
-                    tData.gameObject.name = tData.name;
-
-                    Sprite sprite = tMap.GetSprite(tData.pos);
-                    spriteRenderer.sprite = sprite;
-
-                    AssignLayer(tData.gameObject, tData);
-                }
-            }
-        }                
     }
 
     private void NewTile(Vector3Int pos, Tilemap tMap, TileBase tile, int x, int y, int val)
@@ -141,6 +113,7 @@ public class TileManager : MonoBehaviour
         SpriteRenderer spriteRenderer = newTileObject.AddComponent<SpriteRenderer>();
         Sprite sprite = tMap.GetSprite(tileData.pos);
         spriteRenderer.sprite = sprite;
+        spriteRenderer.color = new Color(1, 1, 1, 1);
 
         SetupNeighbors(tileData);
 
@@ -155,46 +128,55 @@ public class TileManager : MonoBehaviour
                 data.tileLayer = TileLayers.Road;
                 data.pathVal = 0;
                 data.isBuilding = false;
+                data.canInterract = false;
                 break;
             case TileTypes.Ground:
                 data.tileLayer = TileLayers.Ground;
                 data.pathVal = 1;
                 data.isBuilding = false;
+                data.canInterract = false;
                 break;
             case TileTypes.Forest:
                 data.tileLayer = TileLayers.Tree;
                 data.pathVal = 2;
                 data.isBuilding = false;
+                data.canInterract = false;
                 break;
             case TileTypes.River:
                 data.tileLayer = TileLayers.River;
                 data.pathVal = 3;
                 data.isBuilding = false;
+                data.canInterract = false;
                 break;
             case TileTypes.Workshop:
                 data.tileLayer = TileLayers.Workshop;
                 data.pathVal = 4;
                 data.isBuilding = true;
+                data.canInterract = true;
                 break;
             case TileTypes.TownCenter:
                 data.tileLayer = TileLayers.TownCenter;
                 data.pathVal = 5;
                 data.isBuilding = true;
+                data.canInterract = true;
                 break;
             case TileTypes.House:
                 data.tileLayer = TileLayers.House;
                 data.pathVal = 6;
                 data.isBuilding = true;
+                data.canInterract = true;
                 break;
             case TileTypes.Farm:
                 data.tileLayer = TileLayers.Farm;
                 data.pathVal = 7;
                 data.isBuilding = true;
+                data.canInterract = true;
                 break;
             case TileTypes.Defense:
                 data.tileLayer = TileLayers.Defense;
                 data.pathVal = 8;
                 data.isBuilding = true;
+                data.canInterract = true;
                 break;
         }
 
@@ -252,40 +234,45 @@ public class TileManager : MonoBehaviour
                     case TileTypes.Road:
                         existingTile.name = ("Road" + (tile.pos.x).ToString() + (tile.pos.y).ToString());
                         tile.isBuilding = false;
+                        tile.canInterract = false;
                         sr.sprite = tempRoadSprite;
-                        sr.color = Color.white;
+                        sr.color = new Color(1,1,1,1);
                         newBuildingCount = 1;
                         break;
                     case TileTypes.Workshop:
                         existingTile.name = ("Workshop" + (tile.pos.x).ToString() + (tile.pos.y).ToString());
                         tile.isBuilding = true;
+                        tile.canInterract = true;
                         sr.sprite = tempWorkshopSprites[spriteCount];
                         spriteCount++;
-                        sr.color = Color.white;
+                        sr.color = new Color(1,1,1,1);
                         newBuildingCount = 1;
                         break;
                     case TileTypes.House:
                         existingTile.name = ("House" + (tile.pos.x).ToString() + (tile.pos.y).ToString());
                         tile.isBuilding = true;
+                        tile.canInterract = true;
                         sr.sprite = tempHouseSprites[spriteCount];
                         spriteCount++;
-                        sr.color = Color.white;
+                        sr.color = new Color(1,1,1,1);
                         newBuildingCount = 1;
                         break;
                     case TileTypes.Farm:
                         existingTile.name = ("Farm" + (tile.pos.x).ToString() + (tile.pos.y).ToString());
                         tile.isBuilding = true;
+                        tile.canInterract = true;
                         sr.sprite = tempFarmSprites[spriteCount];
                         spriteCount++;
-                        sr.color = Color.white;
+                        sr.color = new Color(1,1,1,1);
                         newBuildingCount = 1;
                         break;
                     case TileTypes.Defense:
                         existingTile.name = ("Defense" + (tile.pos.x).ToString() + (tile.pos.y).ToString());
                         tile.isBuilding = true;
+                        tile.canInterract = true;
                         sr.sprite = tempDefenseSprites[spriteCount];
                         spriteCount++;
-                        sr.color = Color.white;
+                        sr.color = new Color(1,1,1,1);
                         newBuildingCount = 1;
                         break;
                 }
@@ -531,4 +518,19 @@ public class TileManager : MonoBehaviour
 
         return neigh;
     }    
+
+    public TData[] GetAllBuildings()
+    {
+        TData[] allBuildings = new TData[0];
+        for(int i=0;i<tileObjects.Length;i++)
+        {
+            TData tile = tileObjects[i].GetComponent<TData>();
+            if(tile.isBuilding)
+            {
+                allBuildings = aManager.AddTData(allBuildings, tile);
+            }
+        }
+
+        return allBuildings;
+    }
 }

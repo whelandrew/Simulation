@@ -14,7 +14,7 @@ public class TData : MonoBehaviour
 
     public int HP;
     public int AC;
-    public int footTraffic;
+    public int footTraffic;    
 
     public Vector3Int[] neighbors = new Vector3Int[8];
 
@@ -26,6 +26,7 @@ public class TData : MonoBehaviour
     public int pathVal;
 
     //building details for onmouseover
+    public bool canInterract;
     public bool isBuilding;
     public bool owned;
     public VillagerData owner;

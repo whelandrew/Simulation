@@ -109,4 +109,8 @@ public class GameboardController : MonoBehaviour
         return spawnPoints[Random.Range(0, spawnPoints.Length - 1)].transform.position;
     }
 
+    public void SetTilesInRange(TData[] inRange)
+    {        
+        tilesInRange = inRange;
+    }
 }

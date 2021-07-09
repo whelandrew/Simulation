@@ -11,19 +11,18 @@ public class playerController : MonoBehaviour
     private ArrayManager aManager = new ArrayManager();
 
     public Rigidbody2D rBody;
-    public BoxCollider2D bCollider;
     public SpriteRenderer sprite;
     public PlayerData pData;
     public Pathfinding pathing;
 
-    private int speed;
+    public int speed;
     private int baseSpeed;
 
     private int facing =0;
     bool isWalking = false;
-    private Vector2 direction = Vector2.zero;
-    Vector2 finalVelocity = Vector2.zero;
-    Vector2 stopDirection = Vector2.zero;
+    public Vector2 direction = Vector2.zero;
+    private Vector2 finalVelocity = Vector2.zero;
+    public Vector2 stopDirection = Vector2.zero;
 
     public KeyCode[] MappedKeys = new KeyCode[] { KeyCode.W, KeyCode.A, KeyCode.S, KeyCode.D, KeyCode.Space, KeyCode.LeftArrow, KeyCode.RightArrow, KeyCode.UpArrow, KeyCode.DownArrow };
     private float inputTimer=0;
@@ -71,7 +70,7 @@ public class playerController : MonoBehaviour
         gController.tilesInRange = new TData[interactionSprites.Length];
         for (int i = 0; i < interactionSprites.Length; i++)
         {
-            interactionSprites[i].color = Color.clear;
+            interactionSprites[i].color = new Color(1,1,1,1);
             RaycastHit2D hit = Physics2D.Raycast(interactionSprites[i].gameObject.transform.position, Vector2.down);
             if(hit.collider != null)
             {
@@ -207,45 +206,6 @@ public class playerController : MonoBehaviour
         if (stopDirection == face)
         {
             direction = Vector2.zero;
-        }
-    }
-
-    private void OnTriggerStay2D(Collider2D collision)
-    {
-        if (collision.tag == "Tile")
-        {
-            
-        }
-    }
-
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        if (collision.tag == "Tile")
-        {
-            TData tile = collision.GetComponent<TData>();
-
-            if (tile.tileType != TileTypes.Road)
-            {
-                if(tile.tileType == TileTypes.Ground)
-                {
-                    speed = baseSpeed / 2;
-                    stopDirection = Vector2.zero;
-                    pData.currentLoc = tile;
-                    pData.slowed = true;
-                }
-                else
-                {
-                    //stop movement
-                    stopDirection = direction;                    
-                }
-            }
-            else
-            {
-                speed = baseSpeed;
-                stopDirection = Vector2.zero;
-                pData.currentLoc = tile;
-                pData.slowed = false;
-            }    
         }
     }
 }

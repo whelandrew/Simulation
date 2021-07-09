@@ -26,15 +26,12 @@ public class VillagerController : MonoBehaviour
     
     private void Awake()
     {
-        int count = 0;
+        int count = 0;       
+
         villagers = new GameObject[villagerCache.GetComponentsInChildren<VillagerData>().Length];
         foreach (VillagerData i in villagerCache.GetComponentsInChildren<VillagerData>())
         {
             villagers[count] = i.gameObject;
-            foreach(Transform j in i.transform)
-            {
-                j.gameObject.SetActive(false);
-            }
             count++;
         }
 
@@ -76,13 +73,7 @@ public class VillagerController : MonoBehaviour
             {
                 SpriteRenderer sr = villagers[i].GetComponent<SpriteRenderer>();
                 VillagerBehavior vB = villagers[i].GetComponent<VillagerBehavior>();
-                Transform[] children = villagers[i].GetComponentsInChildren<Transform>();
                 VillagerNames vNames = new VillagerNames();
-
-                for(int j=0;j<children.Length;j++)
-                {
-                    children[j].gameObject.SetActive(true);
-                }
 
                 vData.isActive = true;
                 vData.Gender = 0;

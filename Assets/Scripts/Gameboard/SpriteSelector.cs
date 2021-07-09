@@ -198,7 +198,7 @@ public class SpriteSelector : MonoBehaviour
                         }
                         else
                         {
-                            sr.color = Color.clear;
+                            sr.color = new Color(1,1,1,1);
                         }
                     }
                     else
@@ -210,12 +210,12 @@ public class SpriteSelector : MonoBehaviour
                         }
                         else
                         {
-                            sr.color = Color.white;
+                            sr.color = new Color(1,1,1,1);
                         }
 
                         if (i != allSpots.Length-1)
                         {
-                            sr.color = Color.clear;
+                            sr.color = new Color(1,1,1,1);
                         }
                         else
                         {   
@@ -318,7 +318,7 @@ public class SpriteSelector : MonoBehaviour
                     {
                         if (selectedTiles[selectedTiles.Length - 1] != highlightedObject)
                         {
-                            selectedTiles[selectedTiles.Length - 1].GetComponent<SpriteRenderer>().color = Color.white;                            
+                            selectedTiles[selectedTiles.Length - 1].GetComponent<SpriteRenderer>().color = new Color(1,1,1,1);                            
                             selectedTiles = SelectedTilesRemoveAt(selectedTiles, selectedTiles[selectedTiles.Length - 1]);
                         }
                     }
@@ -327,7 +327,7 @@ public class SpriteSelector : MonoBehaviour
                     {
                         if(!selectedTiles[i] == highlightedObject)
                         {
-                            sRender.color = Color.white;
+                            sRender.color = new Color(1,1,1,1);
                             sRender.sprite = tempRoadSpriteIcon;
                             selectedTiles[i] = highlightedObject;
                         }

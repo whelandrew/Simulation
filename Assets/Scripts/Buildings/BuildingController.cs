@@ -24,7 +24,7 @@ public class BuildingController : MonoBehaviour
     {
         assignButton.SetActive(false);
         AssignmentPanelContent.SetActive(false);
-        BuildingUI.SetActive(false);
+        BuildingUI.SetActive(false);        
     }
     private void Update()
     {
@@ -35,8 +35,28 @@ public class BuildingController : MonoBehaviour
                 GetBuildingDetails();
             }            
         }
+
+        InteractionHighlightCheck();
     }
-    
+
+    private void InteractionHighlightCheck()
+    {
+        foreach (TData t in gController.tManager.GetAllBuildings())
+        {
+            SpriteRenderer s = t.GetComponent<SpriteRenderer>();
+            s.color = new Color(1,1,1,1);
+            if (gController.tilesInRange.Length > 0)
+            {
+                for (int i = 0; i < gController.tilesInRange.Length; i++)
+                {
+                    if (gController.tilesInRange[i] == t)
+                    {
+                        s.color = Color.yellow;
+                    }
+                }
+            }
+        }
+    }
 
     private void GetBuildingDetails()
     {        
@@ -46,9 +66,9 @@ public class BuildingController : MonoBehaviour
             if (hit.collider.gameObject.tag == "Tile")
             {
                 TData tile = hit.collider.GetComponent<TData>();
-                //for (int i = 0; i < gController.tilesInRange.Length; i++)
+                for (int i = 0; i < gController.tilesInRange.Length; i++)
                 {
-                    //if (gController.tilesInRange[i] == tile)
+                    if (gController.tilesInRange[i] == tile)
                     {
                         gController.SetUIOn(true);
                         BuildingUI.SetActive(true);
@@ -77,7 +97,11 @@ public class BuildingController : MonoBehaviour
             BuildingDetails.text += "Unoccupied";
         }
 
-        CreateAssignmentLists(tile);
+        assignButton.SetActive(tile.canInterract);
+        if (tile.canInterract)
+        {
+            CreateAssignmentLists(tile);
+        }
     }
 
     private void CreateAssignmentLists(TData tile)
