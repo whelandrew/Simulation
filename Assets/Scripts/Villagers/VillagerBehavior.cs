@@ -1,6 +1,5 @@
 ﻿using UnityEngine.UI;
 using UnityEngine;
-
 public class VillagerBehavior : MonoBehaviour
 {
     public GameboardController gController;
@@ -172,6 +171,7 @@ public class VillagerBehavior : MonoBehaviour
             }
         }
 
+        gameObject.SetActive(true);
         vData.isActive = true;
         footCollider.SetActive(true);
     }
@@ -191,10 +191,16 @@ public class VillagerBehavior : MonoBehaviour
         footCollider.SetActive(false);
 
         gameObject.name = "Unused Villager";
+        gameObject.SetActive(false);
     }
 
     private void GoTo(TileTypes typeLocation)
     {
+        if (vData.currentLocation.tileType == typeLocation)
+        {
+            return;
+        }
+
         if (!vData.isMoving && !vData.atLocation && gController.vController.timeChange)
         {
             gController.vController.timeChange = false;

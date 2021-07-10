@@ -1,13 +1,12 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 public class EnemyBehavior : MonoBehaviour
 {
     public GameboardController gController;
     public EnemyData eData;
     public SpriteRenderer sprite;
-    //public CircleCollider2D targetCollider;
 
+    public bool canAttack;
     private bool canMove;
 
     private int pathVal = 0;
@@ -15,7 +14,7 @@ public class EnemyBehavior : MonoBehaviour
     public float curSpeed;
     public float maxSpeed;
 
-    private bool haltReaction;
+    private bool freezeMovement;
 
     private void Start()
     {
@@ -26,59 +25,70 @@ public class EnemyBehavior : MonoBehaviour
     }
     private void Update()
     {
-        if(eData.isActive && canMove)
+        if (canMove)
         {
-            Behaviors();
-
-            if (eData.currentPath.Length > 0)
+            if (eData.isActive)
             {
-                WalkPath();
+                Behaviors();
+
+                if (eData.currentPath.Length > 0)
+                {
+                    WalkPath();
+                }
             }
         }
     }
 
     IEnumerator ReactionTimer()
     {
-        haltReaction = true;
+        freezeMovement = true;
         yield return new WaitForSeconds(eData.Agility);
-        haltReaction = false;
+        freezeMovement = false;
     }
 
     public void ChangeTarget(TData target)
     {
-        if (!haltReaction)
+        if (!freezeMovement)
         {
             StartCoroutine(ReactionTimer());
 
             pathVal = 0;
-            List<TileTypes> types = new List<TileTypes>();
+            TileTypes[] types = new TileTypes[eData.allowedTypes.Length + 2];
             for (int i = 0; i < eData.allowedTypes.Length; i++)
             {
-                types.Add(eData.allowedTypes[i]);
+                types[i] = eData.allowedTypes[i];
             }
-            types.Add(target.tileType);
+            types[types.Length - 1] = target.tileType;
+            types[types.Length - 2] = eData.currentLoc.tileType;
 
-            //eData.currentPath = gController.pathing.FindPath(eData.currentLoc, target, types.ToArray());            
+            eData.currentPath = gController.pathing.FindPath(eData.currentLoc, target, types);            
         }
     }
 
-    public void DefaultTarget()
+    public void TileTarget(TileTypes type)
     {
-        if (!haltReaction)
+        if (!freezeMovement)
         {
             StartCoroutine(ReactionTimer());
 
             pathVal = 0;
-            TData target = gController.tManager.GetOneTileOfType(TileTypes.TownCenter);
+            TData target = gController.tManager.GetOneTileOfType(type);
 
-            List<TileTypes> types = new List<TileTypes>();
+            TileTypes[] types = new TileTypes[eData.allowedTypes.Length + 2];
             for (int i = 0; i < eData.allowedTypes.Length; i++)
             {
-                types.Add(eData.allowedTypes[i]);
+                types[i] = eData.allowedTypes[i];
             }
-            types.Add(target.tileType);
+            types[types.Length - 1] = target.tileType;
+            types[types.Length - 2] = eData.currentLoc.tileType;
 
-            //eData.currentPath = gController.pathing.FindPath(eData.currentLoc, target, types.ToArray());
+            eData.currentPath = gController.pathing.FindPath(eData.currentLoc, target, types);
+
+            if(eData.currentPath == null)
+            {
+                //go towards player
+                ChangeTarget(gController.pController.pData.currentLoc);
+            }
         }
     }
 
@@ -90,25 +100,32 @@ public class EnemyBehavior : MonoBehaviour
             case Times.Morning: break;
             case Times.None: break;
             case Times.Night: break;            
-        }
-
+        }        
         
-        //move towards towncenter
         if(eData.currentPath != null && eData.currentPath.Length <1)
         {
-            DefaultTarget();
+            //default tile to move towards
+            TileTarget(TileTypes.TownCenter);
         }
-            //locate villager or building
-            //move towards target
-        //if none locate player
+
         //attack when target reached
+        Attack();
         
         //if stop pathing if player atacks
         
     }
 
+    void Attack()
+    {
+        if(canAttack)
+        {
+
+        }
+    }
+
     public void ActivateEnemy()
     {
+        gameObject.SetActive(true);
         eData.isActive = true;
         sprite.enabled = true;
     }

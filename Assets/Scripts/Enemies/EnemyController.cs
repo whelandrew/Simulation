@@ -4,18 +4,16 @@ public class EnemyController : MonoBehaviour
 {
     public GameboardController gController;
     public GameObject enemyCache;
-    GameObject[] enemies = new GameObject[100];
+    GameObject[] enemies = new GameObject[0];
 
     private void Awake()
     {
         int count = 0;
+        enemies = new GameObject[enemyCache.GetComponentsInChildren<EnemyData>().Length];        
         foreach(EnemyData i in enemyCache.GetComponentsInChildren<EnemyData>())
         {
             enemies[count] = i.gameObject;
-            foreach(Transform j in i.transform)            
-            {                
-                j.gameObject.SetActive(false);
-            }
+            enemies[count].SetActive(false);
             count++;
         }
     }
@@ -25,11 +23,6 @@ public class EnemyController : MonoBehaviour
         EnemyData eData = enemies[val].GetComponent<EnemyData>();
         SpriteRenderer sr = enemies[val].GetComponent<SpriteRenderer>();
         BoxCollider2D bCollider = enemies[val].GetComponent<BoxCollider2D>();
-
-        foreach (Transform i in enemies[val].transform)
-        {
-            i.gameObject.SetActive(false);
-        }
 
         eData.isActive = false;
         eData.fName = "";
@@ -43,6 +36,7 @@ public class EnemyController : MonoBehaviour
 
 
         enemies[val].name = "Unused Villager";
+        enemies[val].SetActive(false);
     }
 
     public void CreateEnemy()
@@ -54,15 +48,10 @@ public class EnemyController : MonoBehaviour
             {
                 EnemyBehavior eBehavior = enemies[i].GetComponent<EnemyBehavior>();
 
-                foreach(Transform j in enemies[i].transform)
-                {
-                    j.gameObject.SetActive(true);
-                }
-
                 eData.id = eData.fName + eData.lName + i;
 
                 enemies[i].name = eData.id;
-                enemies[i].transform.position = gController.GetSpawnPoint();
+                enemies[i].transform.position = gController.GetSpawnPoint().transform.position;
 
                 eData.pos = new Vector2Int((int)transform.position.x, (int)transform.position.x);
 
@@ -72,7 +61,7 @@ public class EnemyController : MonoBehaviour
 
                 eData.slowed = false;
 
-                eData.currentLoc = GetCurrentLocation(enemies[i].transform.position);
+                eData.currentLoc = gController.GetSpawnPoint();
 
                 eData.allowedTypes = new TileTypes[] { TileTypes.Road, TileTypes.Ground };
 
@@ -85,19 +74,5 @@ public class EnemyController : MonoBehaviour
                 eBehavior.ActivateEnemy();
             }
         }
-    }
-
-    TData GetCurrentLocation(Vector2 target)
-    {
-        RaycastHit2D hit = Physics2D.Raycast(target, Vector2.down);
-        if(hit.collider != null)
-        {
-            if(hit.collider.tag == "Tile")
-            {
-                return hit.collider.GetComponent<TData>();                    
-            }
-        }
-
-        return null;
     }
 }

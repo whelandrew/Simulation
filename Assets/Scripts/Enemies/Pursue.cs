@@ -1,29 +1,31 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
+﻿using UnityEngine;
 public class Pursue : MonoBehaviour
 {
     public EnemyBehavior eBehavior;
     private void OnTriggerEnter2D(Collider2D collision)
-    {
+    {        
         if(collision.tag=="Player")
         {
-            eBehavior.ChangeTarget(collision.gameObject.GetComponent<PlayerData>().currentLoc);
-                
+            PlayerData pData = collision.GetComponentInParent<PlayerData>();
+            eBehavior.ChangeTarget(pData.currentLoc);                
         }
-        else
-            if(collision.tag=="Villager")
+        
+        if(collision.tag=="Villager")
         {
-            if (collision.gameObject.GetComponent<VillagerData>().isActive)
+            if (collision.gameObject.layer == 19)
             {
-                eBehavior.ChangeTarget(collision.gameObject.GetComponent<VillagerData>().currentLocation);
+                if (collision.GetComponentInParent<VillagerData>().isActive)
+                {
+                    VillagerData vData = collision.GetComponentInParent<VillagerData>();
+                    eBehavior.ChangeTarget(vData.currentLocation);
+                }
             }
-        }
+        }        
     }
 
     private void OnTriggerExit2D(Collider2D collision)
     {
+        /*
         if (collision.tag == "Player")
         {
             eBehavior.DefaultTarget(); 
@@ -36,5 +38,6 @@ public class Pursue : MonoBehaviour
                 eBehavior.DefaultTarget();
             }
         }
+        */
     }
 }

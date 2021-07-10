@@ -6,9 +6,6 @@ public class playerController : MonoBehaviour
     public GameboardController gController;
 
     public GameObject interactionRange;
-    private SpriteRenderer[] interactionSprites;
-
-    private ArrayManager aManager = new ArrayManager();
 
     public Rigidbody2D rBody;
     public SpriteRenderer sprite;
@@ -33,8 +30,6 @@ public class playerController : MonoBehaviour
     {   
         baseSpeed = pData.speed;
         speed = baseSpeed;
-
-        //interactionSprites = interactionRange.GetComponentsInChildren<SpriteRenderer>();
     }
 
     void Update()
@@ -43,20 +38,19 @@ public class playerController : MonoBehaviour
         {
             if (CanMove())
             {
-                Movement();
+                Movement();                         
+            }
 
-                WalkPath();
 
-                //DetectInteractionSpots();
-
-                if (Input.GetMouseButtonDown(0))
+            if (Input.GetMouseButtonDown(0))
+            {
+                if (!isWalking)
                 {
-                    if (!isWalking)
-                    {
-                        MoveTowards();
-                    }
+                    //MoveTowards();
                 }
             }
+
+            WalkPath();
         }
     }
     
@@ -65,67 +59,32 @@ public class playerController : MonoBehaviour
         rBody.velocity = finalVelocity;
     }
 
-    private void DetectInteractionSpots()
-    {
-        gController.tilesInRange = new TData[interactionSprites.Length];
-        for (int i = 0; i < interactionSprites.Length; i++)
-        {
-            interactionSprites[i].color = new Color(1,1,1,1);
-            RaycastHit2D hit = Physics2D.Raycast(interactionSprites[i].gameObject.transform.position, Vector2.down);
-            if(hit.collider != null)
-            {
-                if(hit.collider.tag == "Tile")
-                {
-                    TData tile = hit.collider.GetComponent<TData>();
-                    gController.tilesInRange[i] = tile;
-                    interactionSprites[i].color = new Color(0, 1f, 0, .3f);
-                }
-            }
-        }
-    }
-
     private void MoveTowards()
     {
-        /*
-        Vector2 mPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        TData target = gController.tManager.FindTileData(new Vector3Int((int)mPos.x, (int)mPos.y, 0));
-        if (target.tileType != TileTypes.Ground && target.tileType != TileTypes.Road)
+        RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2Int.down);
+        if(hit.collider.tag == "Tile")
         {
-            for (int i = 0; i < target.neighbors.Length; i++)
+            TData tile = hit.collider.GetComponent<TData>();
+            TileTypes[] types = new TileTypes[pData.allowedTypes.Length + 2];
+            for (int i = 0; i < pData.allowedTypes.Length; i++)
             {
-                TData neighbor = gController.tManager.FindTileData(target.neighbors[i]);
-                if (gController.tilesInRange.Contains(neighbor))
-                {
-                    return;
-                }
-
-                List<TileTypes> types = new List<TileTypes>();
-                for(int j=0;j<pData.allowedTypes.Length;j++)
-                {
-                    types.Add(pData.allowedTypes[j]);
-                }
-                types.Add(target.tileType);
-                pData.currentPath = pathing.FindPath(pData.currentLoc, neighbor, types.ToArray()).ToArray();
-            }            
-        }
-        else
-        {
-            if(gController.tilesInRange.Contains(target))
-            {
-                return;
+                types[i] = pData.allowedTypes[i];
             }
-            pData.currentPath = pathing.FindPath(pData.currentLoc, target).ToArray();
+            types[types.Length - 1] = tile.tileType;
+            types[types.Length - 2] = pData.currentLoc.tileType;
+
+            pData.currentPath = pathing.FindPath(pData.currentLoc, tile, types);
         }
-        */
     }
 
     private void WalkPath()
     {
-        if(pData.currentPath.Length < curPathVal)
+        if(pData.currentPath == null)
             return;
 
         if (pData.currentPath.Length > 0)
         {
+            isWalking = true;
             transform.position = Vector3.MoveTowards(transform.position, pData.currentPath[curPathVal], pData.speed * Time.deltaTime);
 
             if (transform.position == pData.currentPath[curPathVal])

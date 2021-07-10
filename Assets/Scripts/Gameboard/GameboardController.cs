@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
-
 //pipeline for controllers to communicate
 public class GameboardController : MonoBehaviour
 {
@@ -29,17 +28,20 @@ public class GameboardController : MonoBehaviour
 
     public TData[] tilesInRange;
 
-    public GameObject[] spawnPoints;
+    public GameObject SpawnPointsCache;
+    private TData[] spawnPoints;
 
     private void Start()
     {
         populationTotal.text = "Population : 0";
         buildingTotal.text = "Buildings : 0";
 
+        FixSpawnPoints();
+
         StartCoroutine(AdvanceTime());
 
         //remove after testing ends
-        vController.CreateVillager();
+        //vController.CreateVillager();
         pController.canControl = true;
         //eController.CreateEnemy();
     }
@@ -104,9 +106,21 @@ public class GameboardController : MonoBehaviour
         UIOn = isOn;
     }
 
-    public Vector2 GetSpawnPoint()
+    private void FixSpawnPoints()
     {
-        return spawnPoints[Random.Range(0, spawnPoints.Length - 1)].transform.position;
+        int count = 0;
+        spawnPoints = new TData[SpawnPointsCache.GetComponentsInChildren<Transform>().Length-1];
+        foreach(BoxCollider2D i in SpawnPointsCache.GetComponentsInChildren<BoxCollider2D>())
+        {
+            Vector2 orgPos = i.transform.position;
+            TData spawnTile = tManager.FindTileData(new Vector3Int((int)Mathf.Round(orgPos.x), (int)Mathf.Round(orgPos.y), 0));
+            spawnPoints[count] = spawnTile;
+            count++;
+        }
+    }
+    public TData GetSpawnPoint()
+    {
+        return spawnPoints[Random.Range(0, spawnPoints.Length - 1)];
     }
 
     public void SetTilesInRange(TData[] inRange)

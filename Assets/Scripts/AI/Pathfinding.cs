@@ -166,15 +166,14 @@ public class Pathfinding : MonoBehaviour
     }
     
     private TData GetLowestFCost(TData[] list)
-    {
-        TData lowestCost = list[0];
-        if(lowestCost == null)
+    {        
+        if(list == null || list.Length<1)
         {
             list = aManager.ResizeTData(list);
-            lowestCost = list[0];
         }
 
-        if(lowestCost == null)
+        TData lowestCost = list[0];
+        if (lowestCost == null)
         {
             Debug.Log("lowestCost == null");
             return null;

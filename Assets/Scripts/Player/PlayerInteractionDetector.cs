@@ -14,7 +14,7 @@ public class PlayerInteractionDetector : MonoBehaviour
             if (tile.canInterract)
             {
                 TData[] inRange = new TData[] { tile };
-                Debug.Log("InteractionDector for " + tile.name);
+                //Debug.Log("InteractionDector for " + tile.name);
                 for(int i=0;i<tile.neighbors.Length;i++)
                 {
                     TData neigh = gController.tManager.FindTileData(tile.neighbors[i]);

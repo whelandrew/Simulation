@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class VillagerController : MonoBehaviour
 {
@@ -32,6 +31,7 @@ public class VillagerController : MonoBehaviour
         foreach (VillagerData i in villagerCache.GetComponentsInChildren<VillagerData>())
         {
             villagers[count] = i.gameObject;
+            villagers[count].SetActive(false);
             count++;
         }
 
@@ -88,7 +88,7 @@ public class VillagerController : MonoBehaviour
                 sr.enabled = true;
 
                 villagers[i].name = vData.id;
-                villagers[i].transform.position = gController.GetSpawnPoint();
+                villagers[i].transform.position = gController.GetSpawnPoint().transform.position;
 
                 vData.pos = new Vector2Int((int)villagers[i].transform.position.x, (int)villagers[i].transform.position.y);                                
                 vData.currentLocation = gController.tManager.FindTileData(new Vector3Int((int)villagers[i].transform.position.x, (int)villagers[i].transform.position.y, 0));
