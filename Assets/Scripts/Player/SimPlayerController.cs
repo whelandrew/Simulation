@@ -50,7 +50,7 @@ public class SimPlayerController : MonoBehaviour
             }
 
             WalkPath();
-        }
+        }        
     }
 
     private void FixedUpdate()

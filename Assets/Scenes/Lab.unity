@@ -1944,7 +1944,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e3fb686fad9647f4d995ed868f012985, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gController: {fileID: 0}
+  gController: {fileID: 1027583838}
   villagerCache: {fileID: 1679509198}
   VillagerSpawnPoints: {fileID: 207611892}
   villagerTotal: 0
@@ -2038,7 +2038,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 595b9bb7978f932438ca5a9e7f123cfe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gController: {fileID: 0}
+  gController: {fileID: 1027583838}
   enemyCache: {fileID: 1139632960}
 --- !u!1 &1044064553
 GameObject:
@@ -2277,6 +2277,56 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Singleton
+      objectReference: {fileID: 0}
+    - target: {fileID: 3534774670315371546, guid: 190471969d0bc6643bc667623df43465,
+        type: 3}
+      propertyPath: allowedTypes.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3534774670315371546, guid: 190471969d0bc6643bc667623df43465,
+        type: 3}
+      propertyPath: id
+      value: 24601
+      objectReference: {fileID: 0}
+    - target: {fileID: 3534774670315371546, guid: 190471969d0bc6643bc667623df43465,
+        type: 3}
+      propertyPath: fName
+      value: Guy
+      objectReference: {fileID: 0}
+    - target: {fileID: 3534774670315371546, guid: 190471969d0bc6643bc667623df43465,
+        type: 3}
+      propertyPath: lName
+      value: Dude
+      objectReference: {fileID: 0}
+    - target: {fileID: 3534774670315371546, guid: 190471969d0bc6643bc667623df43465,
+        type: 3}
+      propertyPath: speed
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3534774670315371546, guid: 190471969d0bc6643bc667623df43465,
+        type: 3}
+      propertyPath: allowedTypes.Array.data[0]
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3534774670315371546, guid: 190471969d0bc6643bc667623df43465,
+        type: 3}
+      propertyPath: allowedTypes.Array.data[1]
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 3534774670315371546, guid: 190471969d0bc6643bc667623df43465,
+        type: 3}
+      propertyPath: personaPoints.Array.data[0]
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3534774670315371546, guid: 190471969d0bc6643bc667623df43465,
+        type: 3}
+      propertyPath: personaPoints.Array.data[1]
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3534774670315371546, guid: 190471969d0bc6643bc667623df43465,
+        type: 3}
+      propertyPath: personaPoints.Array.data[2]
+      value: 3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 190471969d0bc6643bc667623df43465, type: 3}
@@ -48278,7 +48328,7 @@ PrefabInstance:
         type: 3}
       propertyPath: gController
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 1027583838}
     - target: {fileID: 1216646688115285368, guid: c5af4225602f45549aba2c8322328a66,
         type: 3}
       propertyPath: speechBubble
@@ -48443,7 +48493,7 @@ PrefabInstance:
         type: 3}
       propertyPath: gController
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 1027583838}
     - target: {fileID: 1044124114946429358, guid: e1fcb194774a727499adfa216966d40a,
         type: 3}
       propertyPath: m_TagString
@@ -49816,7 +49866,7 @@ PrefabInstance:
         type: 3}
       propertyPath: gController
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 1027583838}
     - target: {fileID: 6798588886292969845, guid: fc44ff396ec6a124da174c971366e46d,
         type: 3}
       propertyPath: m_LocalPosition.x

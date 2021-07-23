@@ -75,4 +75,32 @@ public class EnemyController : MonoBehaviour
             }
         }
     }
+
+    public EnemyData[] GetActiveEnemies()
+    {
+        EnemyData[] actives = new EnemyData[enemies.Length];
+        int count = 0;
+        for(int i=0;i<enemies.Length;i++)
+        {
+            EnemyData data = enemies[i].GetComponent<EnemyData>();
+            if(data.isActive)
+            {
+                actives[i] = data;
+                count++;
+            }
+        }
+
+        EnemyData[] final = new EnemyData[count];
+        count = 0;
+        for(int i=0;i<actives.Length;i++)
+        {
+            if(actives[i] != null)
+            {
+                final[count] = actives[i];
+                count++;
+            }
+        }
+
+        return final;
+    }
 }
