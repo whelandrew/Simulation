@@ -1,8 +1,7 @@
-﻿using System.Collections;
-using UnityEngine;
+﻿using UnityEngine;
 public class EnemyBehavior : MonoBehaviour
 {
-    public GameboardController gController;
+    public SimGameboardController gController;
     public EnemyData eData;
     public SpriteRenderer sprite;
 
@@ -39,18 +38,19 @@ public class EnemyBehavior : MonoBehaviour
         }
     }
 
+    /*
     IEnumerator ReactionTimer()
     {
         freezeMovement = true;
         yield return new WaitForSeconds(eData.Agility);
         freezeMovement = false;
     }
-
+    */
     public void ChangeTarget(TData target)
     {
         if (!freezeMovement)
         {
-            StartCoroutine(ReactionTimer());
+            //StartCoroutine(ReactionTimer());
 
             pathVal = 0;
             TileTypes[] types = new TileTypes[eData.allowedTypes.Length + 2];
@@ -69,10 +69,11 @@ public class EnemyBehavior : MonoBehaviour
     {
         if (!freezeMovement)
         {
-            StartCoroutine(ReactionTimer());
+            //StartCoroutine(ReactionTimer());
 
             pathVal = 0;
-            TData target = gController.tManager.GetOneTileOfType(type);
+            //TData target = gController.tManager.GetOneTileOfType(type);
+            TData target = new TData();
 
             TileTypes[] types = new TileTypes[eData.allowedTypes.Length + 2];
             for (int i = 0; i < eData.allowedTypes.Length; i++)
@@ -87,7 +88,7 @@ public class EnemyBehavior : MonoBehaviour
             if(eData.currentPath == null)
             {
                 //go towards player
-                ChangeTarget(gController.pController.pData.currentLoc);
+                ChangeTarget(gController.pController.pData.curLoc);
             }
         }
     }

@@ -2,7 +2,7 @@
 
 public class VillagerController : MonoBehaviour
 {
-    public GameboardController gController;
+    public SimGameboardController gController;
 
     public GameObject villagerCache;
     private GameObject[] villagers = new GameObject[0];

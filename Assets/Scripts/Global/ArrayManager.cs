@@ -14,6 +14,31 @@ public class ArrayManager
         return false;
     }
 
+    public SceneData[] ResizeSCData(SceneData[] arr)
+    {
+        int count = 0;
+        for (int i = 0; i < arr.Length; i++)
+        {
+            if (arr[i] != null)
+            {
+                count++;
+            }
+        }
+
+        SceneData[] newArr = new SceneData[count];
+        count = 0;
+        for (int i = 0; i < arr.Length; i++)
+        {
+            if (arr[i] != null)
+            {
+                newArr[count] = arr[i];
+                count++;
+            }
+        }
+
+        return newArr;
+    }
+
     public TData[] ResizeTData(TData[] arr)
     {
         int count = 0;

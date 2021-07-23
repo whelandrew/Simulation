@@ -2,7 +2,7 @@
 
 public class EnemyController : MonoBehaviour
 {
-    public GameboardController gController;
+    public SimGameboardController gController;
     public GameObject enemyCache;
     GameObject[] enemies = new GameObject[0];
 

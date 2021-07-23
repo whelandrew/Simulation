@@ -2,7 +2,7 @@
 using UnityEngine.UI;
 public class BuildingController : MonoBehaviour
 {
-    public GameboardController gController;
+    public SimGameboardController gController;
 
     public GameObject BuildingUI;
     public Text BuildingName;

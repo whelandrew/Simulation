@@ -1,9 +1,8 @@
 ﻿using UnityEngine;
-
-public class playerController : MonoBehaviour
+public class SimPlayerController : MonoBehaviour
 {
     public bool canControl;
-    public GameboardController gController;
+    public SimGameboardController gController;
 
     public GameObject interactionRange;
 
@@ -15,19 +14,19 @@ public class playerController : MonoBehaviour
     public int speed;
     private int baseSpeed;
 
-    private int facing =0;
+    private int facing = 0;
     bool isWalking = false;
     public Vector2 direction = Vector2.zero;
     private Vector2 finalVelocity = Vector2.zero;
     public Vector2 stopDirection = Vector2.zero;
 
     public KeyCode[] MappedKeys = new KeyCode[] { KeyCode.W, KeyCode.A, KeyCode.S, KeyCode.D, KeyCode.Space, KeyCode.LeftArrow, KeyCode.RightArrow, KeyCode.UpArrow, KeyCode.DownArrow };
-    private float inputTimer=0;
+    private float inputTimer = 0;
 
     private int curPathVal = 0;
-    
+
     void Start()
-    {   
+    {
         baseSpeed = pData.speed;
         speed = baseSpeed;
     }
@@ -38,7 +37,7 @@ public class playerController : MonoBehaviour
         {
             if (CanMove())
             {
-                Movement();                         
+                Movement();
             }
 
 
@@ -53,7 +52,7 @@ public class playerController : MonoBehaviour
             WalkPath();
         }
     }
-    
+
     private void FixedUpdate()
     {
         rBody.velocity = finalVelocity;
@@ -62,7 +61,7 @@ public class playerController : MonoBehaviour
     private void MoveTowards()
     {
         RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2Int.down);
-        if(hit.collider.tag == "Tile")
+        if (hit.collider.tag == "Tile")
         {
             TData tile = hit.collider.GetComponent<TData>();
             TileTypes[] types = new TileTypes[pData.allowedTypes.Length + 2];
@@ -71,38 +70,38 @@ public class playerController : MonoBehaviour
                 types[i] = pData.allowedTypes[i];
             }
             types[types.Length - 1] = tile.tileType;
-            types[types.Length - 2] = pData.currentLoc.tileType;
+            types[types.Length - 2] = pData.curLoc.tileType;
 
-            pData.currentPath = pathing.FindPath(pData.currentLoc, tile, types);
+            pData.curPath = pathing.FindPath(pData.curLoc, tile, types);
         }
     }
 
     private void WalkPath()
     {
-        if(pData.currentPath == null)
+        if (pData.curPath == null)
             return;
 
-        if (pData.currentPath.Length > 0)
+        if (pData.curPath.Length > 0)
         {
             isWalking = true;
-            transform.position = Vector3.MoveTowards(transform.position, pData.currentPath[curPathVal], pData.speed * Time.deltaTime);
+            transform.position = Vector3.MoveTowards(transform.position, pData.curPath[curPathVal], pData.speed * Time.deltaTime);
 
-            if (transform.position == pData.currentPath[curPathVal])
+            if (transform.position == pData.curPath[curPathVal])
             {
                 curPathVal++;
 
-                if (curPathVal == pData.currentPath.Length)
+                if (curPathVal == pData.curPath.Length)
                 {
                     curPathVal = 0;
                     isWalking = false;
-                    pData.currentPath = new Vector3Int[0];
+                    pData.curPath = new Vector3Int[0];
                 }
             }
         }
     }
 
     private bool CanMove()
-    {        
+    {
         inputTimer += 1f * Time.deltaTime;
 
         if (gController.UIOn)

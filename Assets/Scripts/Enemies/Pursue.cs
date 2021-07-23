@@ -7,7 +7,7 @@ public class Pursue : MonoBehaviour
         if(collision.tag=="Player")
         {
             PlayerData pData = collision.GetComponentInParent<PlayerData>();
-            eBehavior.ChangeTarget(pData.currentLoc);                
+            eBehavior.ChangeTarget(pData.curLoc);                
         }
         
         if(collision.tag=="Villager")

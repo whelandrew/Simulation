@@ -18,6 +18,8 @@ public class TData : MonoBehaviour
 
     public Vector3Int[] neighbors = new Vector3Int[8];
 
+    public string sprite;
+
     //for pathfinding
     public int gCost;
     public int hCost;

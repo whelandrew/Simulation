@@ -1,9 +1,5 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
-using System.Reflection;
-using System;
 
 //does not go into actual game build
 public class Overlay : MonoBehaviour
@@ -14,7 +10,7 @@ public class Overlay : MonoBehaviour
     public Text tileInfoText;
     private bool tileManagerReady;
 
-    public GameboardController gController;
+    public SimGameboardController gController;
     public TileManager tileManager;
     public SpriteSelector sSelector;
 

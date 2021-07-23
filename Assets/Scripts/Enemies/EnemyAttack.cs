@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 // triggers paltformgame scene
 public class EnemyAttack : MonoBehaviour

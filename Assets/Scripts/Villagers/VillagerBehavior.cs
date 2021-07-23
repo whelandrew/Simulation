@@ -2,7 +2,7 @@
 using UnityEngine;
 public class VillagerBehavior : MonoBehaviour
 {
-    public GameboardController gController;
+    public SimGameboardController gController;
     public Pathfinding pathing;
     public TileManager tManager;
     public GameObject footCollider;
@@ -204,7 +204,7 @@ public class VillagerBehavior : MonoBehaviour
         if (!vData.isMoving && !vData.atLocation && gController.vController.timeChange)
         {
             gController.vController.timeChange = false;
-            TData targetTile = tManager.GetOneTileOfType(typeLocation);
+            TData targetTile = tManager.GetOneTileOfType(typeLocation);            
             vData.target = targetTile;
             vData.goingTo = typeLocation;
             vData.isMoving = true;

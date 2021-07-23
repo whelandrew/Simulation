@@ -3,7 +3,7 @@
 public class PlayerFootCollider : MonoBehaviour
 {
     public PlayerData pData;
-    public playerController pController;
+    public SimPlayerController pController;
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.tag == "Tile")
@@ -16,7 +16,7 @@ public class PlayerFootCollider : MonoBehaviour
                 {
                     pController.speed = pData.speed / 2;
                     pController.stopDirection = Vector2.zero;
-                    pData.currentLoc = tile;
+                    pData.curLoc = tile;
                     pData.slowed = true;
                 }
                 else
@@ -29,7 +29,7 @@ public class PlayerFootCollider : MonoBehaviour
             {
                 pController.speed = pData.speed;
                 pController.stopDirection = Vector2.zero;
-                pData.currentLoc = tile;
+                pData.curLoc = tile;
                 pData.slowed = false;
             }
         }

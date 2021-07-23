@@ -1,9 +1,7 @@
-﻿using UnityEngine;
-using UnityEngine.Tilemaps;
-using System.Collections.Generic;
+﻿using System.Collections;
 using System.Linq;
-using System.Collections;
-
+using UnityEngine;
+using UnityEngine.Tilemaps;
 public class TileManager : MonoBehaviour
 {
     ArrayManager aManager = new ArrayManager();
@@ -37,14 +35,14 @@ public class TileManager : MonoBehaviour
         tileMaps = GridObject.GetComponentsInChildren<Tilemap>();
         StartCoroutine(CreateMap());
     }
-
+    
     private IEnumerator CreateMap()
     {
         InitializeBaseTileMap();
         finishedLoading = true;
         yield return null;
-    }
-
+    }    
+    
     private void InitializeBaseTileMap()
     {
         tileObjects = new GameObject[10000];
@@ -114,6 +112,8 @@ public class TileManager : MonoBehaviour
         Sprite sprite = tMap.GetSprite(tileData.pos);
         spriteRenderer.sprite = sprite;
         spriteRenderer.color = new Color(1, 1, 1, 1);
+
+        tileData.sprite = sprite.name;
 
         SetupNeighbors(tileData);
 
@@ -224,65 +224,72 @@ public class TileManager : MonoBehaviour
         int newBuildingCount = 0;
         for (int i =0;i<tilesToUpdate.Length;i++)
         {
-            GameObject existingTile = tileObjects.Where(x => x.GetComponent<TData>().pos == tilesToUpdate[i].transform.position).FirstOrDefault();
-            TData tile = existingTile.GetComponent<TData>();
-            SpriteRenderer sr = existingTile.GetComponent<SpriteRenderer>();
-            if (existingTile)
+            for (int j = 0; j < tileObjects.Length; j++)
             {
-                switch (updateTo)
+                if (tileObjects[j].GetComponent<TData>().pos == tilesToUpdate[i].transform.position)
                 {
-                    case TileTypes.Road:
-                        existingTile.name = ("Road" + (tile.pos.x).ToString() + (tile.pos.y).ToString());
-                        tile.isBuilding = false;
-                        tile.canInterract = false;
-                        sr.sprite = tempRoadSprite;
-                        sr.color = new Color(1,1,1,1);
-                        newBuildingCount = 1;
-                        break;
-                    case TileTypes.Workshop:
-                        existingTile.name = ("Workshop" + (tile.pos.x).ToString() + (tile.pos.y).ToString());
-                        tile.isBuilding = true;
-                        tile.canInterract = true;
-                        sr.sprite = tempWorkshopSprites[spriteCount];
-                        spriteCount++;
-                        sr.color = new Color(1,1,1,1);
-                        newBuildingCount = 1;
-                        break;
-                    case TileTypes.House:
-                        existingTile.name = ("House" + (tile.pos.x).ToString() + (tile.pos.y).ToString());
-                        tile.isBuilding = true;
-                        tile.canInterract = true;
-                        sr.sprite = tempHouseSprites[spriteCount];
-                        spriteCount++;
-                        sr.color = new Color(1,1,1,1);
-                        newBuildingCount = 1;
-                        break;
-                    case TileTypes.Farm:
-                        existingTile.name = ("Farm" + (tile.pos.x).ToString() + (tile.pos.y).ToString());
-                        tile.isBuilding = true;
-                        tile.canInterract = true;
-                        sr.sprite = tempFarmSprites[spriteCount];
-                        spriteCount++;
-                        sr.color = new Color(1,1,1,1);
-                        newBuildingCount = 1;
-                        break;
-                    case TileTypes.Defense:
-                        existingTile.name = ("Defense" + (tile.pos.x).ToString() + (tile.pos.y).ToString());
-                        tile.isBuilding = true;
-                        tile.canInterract = true;
-                        sr.sprite = tempDefenseSprites[spriteCount];
-                        spriteCount++;
-                        sr.color = new Color(1,1,1,1);
-                        newBuildingCount = 1;
-                        break;
+                    //GameObject existingTile = tileObjects.Where(x => x.GetComponent<TData>().pos == tilesToUpdate[i].transform.position).FirstOrDefault();
+                    GameObject existingTile = tileObjects[j];
+                    TData tile = existingTile.GetComponent<TData>();
+                    SpriteRenderer sr = existingTile.GetComponent<SpriteRenderer>();
+                    if (existingTile)
+                    {
+                        switch (updateTo)
+                        {
+                            case TileTypes.Road:
+                                existingTile.name = ("Road" + (tile.pos.x).ToString() + (tile.pos.y).ToString());
+                                tile.isBuilding = false;
+                                tile.canInterract = false;
+                                sr.sprite = tempRoadSprite;
+                                sr.color = new Color(1, 1, 1, 1);
+                                newBuildingCount = 1;
+                                break;
+                            case TileTypes.Workshop:
+                                existingTile.name = ("Workshop" + (tile.pos.x).ToString() + (tile.pos.y).ToString());
+                                tile.isBuilding = true;
+                                tile.canInterract = true;
+                                sr.sprite = tempWorkshopSprites[spriteCount];
+                                spriteCount++;
+                                sr.color = new Color(1, 1, 1, 1);
+                                newBuildingCount = 1;
+                                break;
+                            case TileTypes.House:
+                                existingTile.name = ("House" + (tile.pos.x).ToString() + (tile.pos.y).ToString());
+                                tile.isBuilding = true;
+                                tile.canInterract = true;
+                                sr.sprite = tempHouseSprites[spriteCount];
+                                spriteCount++;
+                                sr.color = new Color(1, 1, 1, 1);
+                                newBuildingCount = 1;
+                                break;
+                            case TileTypes.Farm:
+                                existingTile.name = ("Farm" + (tile.pos.x).ToString() + (tile.pos.y).ToString());
+                                tile.isBuilding = true;
+                                tile.canInterract = true;
+                                sr.sprite = tempFarmSprites[spriteCount];
+                                spriteCount++;
+                                sr.color = new Color(1, 1, 1, 1);
+                                newBuildingCount = 1;
+                                break;
+                            case TileTypes.Defense:
+                                existingTile.name = ("Defense" + (tile.pos.x).ToString() + (tile.pos.y).ToString());
+                                tile.isBuilding = true;
+                                tile.canInterract = true;
+                                sr.sprite = tempDefenseSprites[spriteCount];
+                                spriteCount++;
+                                sr.color = new Color(1, 1, 1, 1);
+                                newBuildingCount = 1;
+                                break;
+                        }
+
+                        tile.name = existingTile.name;
+                        tile.tileType = updateTo;
+
+                        buildingTotal += newBuildingCount;
+
+                        AssignLayer(tilesToUpdate[i], tile);
+                    }
                 }
-
-                tile.name = existingTile.name;
-                tile.tileType = updateTo;
-
-                buildingTotal += newBuildingCount;
-
-                AssignLayer(tilesToUpdate[i], tile);
             }
         }
     }
@@ -351,6 +358,7 @@ public class TileManager : MonoBehaviour
     public bool FindClosestNeighbor(TData curTile, TileTypes[] tileTypeToFind, string forcedNeighbor = "null")
     {
         Debug.Log("FindNeighbors");
+        
         for (int i = 0; i < curTile.neighbors.Length; i++)
         {
             TData data = FindTileData(curTile.neighbors[i]);
@@ -368,6 +376,7 @@ public class TileManager : MonoBehaviour
                 }
             }
         }
+        
         return false;
     }
 
@@ -390,18 +399,23 @@ public class TileManager : MonoBehaviour
     }
     public GameObject[] RetrieveTileObjects(Vector3Int[] tilePos)
     {
-        List<GameObject> foundTiles = new List<GameObject>();
+        //List<GameObject> foundTiles = new List<GameObject>();
+        GameObject[] foundTiles = new GameObject[100];
+        int count = 0;
         for (int i = 0; i < tilePos.Length; i++)
         {
             for(int j=0;j<tileObjects.Length; j++)
             {
                 if(tileObjects[j].GetComponent<TData>().pos == tilePos[i])
                 {
-                    foundTiles.Add(tileObjects[j]);
+                    //foundTiles.Add(tileObjects[j]);
+                    foundTiles[count] = tileObjects[j];
+                    count++;
                 }
             }
-        }
-        return foundTiles.ToArray();
+        }        
+
+        return foundTiles;        
     }
 
     public TData FindTileData(Vector3Int tilePos)
@@ -416,10 +430,12 @@ public class TileManager : MonoBehaviour
 
         return null;
     }
-        
-    public List<TData> GetAllTilesOfType(TileTypes type)
+
+    //public List<TData> GetAllTilesOfType(TileTypes type)
+    public TData[] GetAllTilesOfType(TileTypes type)
     {
-        List<TData> tiles = new List<TData>();
+        TData[] tiles = new TData[100];
+        int count = 0;
         for(int i = 0; i < tileObjects.Length; i++)
         {
             TData tile = tileObjects[i].GetComponent<TData>();
@@ -427,7 +443,9 @@ public class TileManager : MonoBehaviour
             {
                 if(tile.tileType == type)
                 {
-                    tiles.Add(tile);
+                    //tiles.Add(tile);
+                    tiles[count] = tile;
+                    count++;
                 }
             }
         }
@@ -447,25 +465,29 @@ public class TileManager : MonoBehaviour
     
     public Vector2Int GetTargetCenter(TileTypes type, string owner=null)
     {
-        List<Vector3Int> pos = new List<Vector3Int>();
+        //List<Vector3Int> pos = new List<Vector3Int>();
+        Vector3Int[] pos = new Vector3Int[100];
+        int count = 0;
         if(owner==null)
         {
             for(int i =0;i<tileObjects.Length; i++)
             {
                 if(tileObjects[i].GetComponent<TData>().tileType == type)
                 {
-                    pos.Add(tileObjects[i].GetComponent<TData>().pos);
+                    //pos.Add(tileObjects[i].GetComponent<TData>().pos);
+                    pos[0] = tileObjects[i].GetComponent<TData>().pos;
+                    count++;
                 }
             }
         }
 
         Vector3Int final = Vector3Int.zero;
-        for (int i = 0; i < pos.Count; i++)
+        for (int i = 0; i < pos.Length; i++)
         {
             final += pos[i];
         }
 
-        return new Vector2Int((final.x / pos.Count), final.y / pos.Count);
+        return new Vector2Int((final.x / count), final.y / count);
     }
 
     public TData GetOneTileOfType(TileTypes type, string owner=null)
@@ -503,22 +525,27 @@ public class TileManager : MonoBehaviour
             default: return null;
         }
     }
-        
-    public List<TData> GetNeighborTilesOfType(TData[] neighbors, TileTypes[] type)
+
+    
+    //public List<TData> GetNeighborTilesOfType(TData[] neighbors, TileTypes[] type)
+    public TData[] GetNeighborTilesOfType(TData[] neighbors, TileTypes[] type)
     {
-        List<TData> neigh = new List<TData>();
+        TData[] neigh = new TData[100]; ;
+        int count = 0;
         for(int i =0;i<neighbors.Length;i++)
         {
             if(type.Contains(neighbors[i].tileType))
             {
-                neigh.Add(neighbors[i]);
+                //neigh.Add(neighbors[i]);
+                neigh[count] = neighbors[i];
+                count++;
                 continue;
             }
-        }
+        }        
 
         return neigh;
     }    
-
+    
     public TData[] GetAllBuildings()
     {
         TData[] allBuildings = new TData[0];

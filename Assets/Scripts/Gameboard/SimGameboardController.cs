@@ -1,13 +1,14 @@
-﻿using UnityEngine;
+﻿using System.Collections;
 using UnityEngine.UI;
-using System.Collections;
-//pipeline for controllers to communicate
-public class GameboardController : MonoBehaviour
+using UnityEngine;
+
+public class SimGameboardController : MonoBehaviour
 {
+    public Singleton singleton;
     public TileManager tManager;
     public VillagerController vController;
     public BuildingController bController;
-    public playerController pController;
+    public SimPlayerController pController;
     public EnemyController eController;
     public Pathfinding pathing;
 
@@ -31,6 +32,7 @@ public class GameboardController : MonoBehaviour
     public GameObject SpawnPointsCache;
     private TData[] spawnPoints;
 
+    ChoicesTypes choicesResult = ChoicesTypes.None;
     private void Start()
     {
         populationTotal.text = "Population : 0";
@@ -60,7 +62,7 @@ public class GameboardController : MonoBehaviour
             buildingTotal.text = "Buildings : " + buildingCount;
         }
 
-        homelessTotal.text = "Homeless : " + (vController.villagerTotal-vController.homeTotal);        
+        homelessTotal.text = "Homeless : " + (vController.villagerTotal - vController.homeTotal);
 
         Schedule();
     }
@@ -68,25 +70,25 @@ public class GameboardController : MonoBehaviour
     private void Schedule()
     {
         //morning
-        if(timeOfDay > 0 && timeOfDay<9)
+        if (timeOfDay > 0 && timeOfDay < 9)
         {
             TOD = Times.Morning;
             vController.timeChange = timeOfDay == 0;
         }
-        
+
         //afternoon
-        else if(timeOfDay >9&&timeOfDay<19)
+        else if (timeOfDay > 9 && timeOfDay < 19)
         {
             TOD = Times.Noon;
-            vController.timeChange = timeOfDay==10;
+            vController.timeChange = timeOfDay == 10;
         }
-        else if(timeOfDay >19 && timeOfDay<29)
+        else if (timeOfDay > 19 && timeOfDay < 29)
         {
             TOD = Times.Night;
-            vController.timeChange = timeOfDay==20;
+            vController.timeChange = timeOfDay == 20;
         }
         else
-        if(timeOfDay > 29)
+        if (timeOfDay > 29)
         {
             timeOfDay = 0;
         }
@@ -109,8 +111,8 @@ public class GameboardController : MonoBehaviour
     private void FixSpawnPoints()
     {
         int count = 0;
-        spawnPoints = new TData[SpawnPointsCache.GetComponentsInChildren<Transform>().Length-1];
-        foreach(BoxCollider2D i in SpawnPointsCache.GetComponentsInChildren<BoxCollider2D>())
+        spawnPoints = new TData[SpawnPointsCache.GetComponentsInChildren<Transform>().Length - 1];
+        foreach (BoxCollider2D i in SpawnPointsCache.GetComponentsInChildren<BoxCollider2D>())
         {
             Vector2 orgPos = i.transform.position;
             TData spawnTile = tManager.FindTileData(new Vector3Int((int)Mathf.Round(orgPos.x), (int)Mathf.Round(orgPos.y), 0));
@@ -124,7 +126,24 @@ public class GameboardController : MonoBehaviour
     }
 
     public void SetTilesInRange(TData[] inRange)
-    {        
+    {
         tilesInRange = inRange;
+    }
+    public void ChoiceOnClick(int val)
+    {
+        Debug.Log("ChoiceOnClick");
+        switch (val)
+        {
+            case 0: choicesResult = ChoicesTypes.Positive; break;
+            case 1: choicesResult = ChoicesTypes.Neutral; break;
+            case 2: choicesResult = ChoicesTypes.Mean; break;
+            case 3: choicesResult = ChoicesTypes.Flirty; break;
+            default: choicesResult = ChoicesTypes.None; break;
+        }
+    }
+
+    public VillagerData[] GetAllVillagers()
+    {                
+        return vController.GetActiveVillagers();
     }
 }
