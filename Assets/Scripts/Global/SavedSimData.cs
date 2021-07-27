@@ -14,7 +14,14 @@ public class LoadedData
     public int[] tileHP;
     public int[] tileAC;
     public int[] tileFootTraffic;
-    public Vector3Int[][] tileNeighbors;
+    public Vector3Int[] tileNeighbor1;
+    public Vector3Int[] tileNeighbor2;
+    public Vector3Int[] tileNeighbor3;
+    public Vector3Int[] tileNeighbor4;
+    public Vector3Int[] tileNeighbor5;
+    public Vector3Int[] tileNeighbor6;
+    public Vector3Int[] tileNeighbor7;
+    public Vector3Int[] tileNeighbor8;
     public string[] sprite;
     //building details for onmouseover
     public bool[] tileCanInterract;
@@ -32,7 +39,7 @@ public class LoadedData
     public int[] vspeed;
     public bool[] visActive;
     public bool[] visMoving;
-    public Vector3Int[][] vcurrentPath;
+    public Vector3Int[] vcurrentPath;
     public string[] vFName;
     public string[] vLName;
     public int[] vGender;
@@ -49,7 +56,12 @@ public class LoadedData
     public int[] vgoingTo;
     public Vector3Int[] vtarget;
     public bool[] vatLocation;
-    public int[][] vallowedTypes;
+    public int vallowedTypes0=-1;
+    public int vallowedTypes1=-1;
+    public int vallowedTypes2=-1;
+    public int vallowedTypes3=-1;
+    public int vallowedTypes4=-1;
+    public int vallowedTypes5 = -1;
     public int[] vmood;
     public int[] vAC;
     public int[] vHP;
@@ -69,7 +81,12 @@ public class LoadedData
     public int[] egender;
     public bool[] eslowed;
     public Vector3[] ecurrentLoc;
-    public Vector3Int[][] ecurrentPath;
-    public int[][] eallowedTypes;
+    public Vector3Int[] ecurrentPath;
+    public int eallowedTypes0=-1;
+    public int eallowedTypes1=-1;
+    public int eallowedTypes2=-1;
+    public int eallowedTypes3=-1;
+    public int eallowedTypes4=-1;
+    public int eallowedTypes5 = -1;
     public Vector3Int[] etargetTile;
 }

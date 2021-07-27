@@ -49936,6 +49936,36 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1027583833}
     m_Modifications:
+    - target: {fileID: 7954405251249706359, guid: 526cb542efef4c94db7d3abbe1be440e,
+        type: 3}
+      propertyPath: m_Color.a
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7954405251706883351, guid: 526cb542efef4c94db7d3abbe1be440e,
+        type: 3}
+      propertyPath: m_Color.a
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7954405251723710755, guid: 526cb542efef4c94db7d3abbe1be440e,
+        type: 3}
+      propertyPath: m_Color.a
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7954405251839241950, guid: 526cb542efef4c94db7d3abbe1be440e,
+        type: 3}
+      propertyPath: m_Color.a
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7954405251861358759, guid: 526cb542efef4c94db7d3abbe1be440e,
+        type: 3}
+      propertyPath: m_Color.a
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7954405252107803159, guid: 526cb542efef4c94db7d3abbe1be440e,
+        type: 3}
+      propertyPath: m_Color.a
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7954405252266526124, guid: 526cb542efef4c94db7d3abbe1be440e,
         type: 3}
       propertyPath: m_Name
@@ -49994,6 +50024,16 @@ PrefabInstance:
     - target: {fileID: 7954405252266526125, guid: 526cb542efef4c94db7d3abbe1be440e,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7954405252364558598, guid: 526cb542efef4c94db7d3abbe1be440e,
+        type: 3}
+      propertyPath: m_Color.a
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7954405252709193906, guid: 526cb542efef4c94db7d3abbe1be440e,
+        type: 3}
+      propertyPath: m_Color.a
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []

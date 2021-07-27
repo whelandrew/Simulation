@@ -31,9 +31,17 @@ public class SystemsController : MonoBehaviour
         savedData.tileFootTraffic = new int[tiles.Length];
         savedData.tileCanInterract = new bool[tiles.Length];
         savedData.tileIsBuilding = new bool[tiles.Length];
-        savedData.tileOwned = new bool[tiles.Length];
-        savedData.tileNeighbors = new Vector3Int[tiles.Length][];
+        savedData.tileOwned = new bool[tiles.Length];        
         savedData.sprite = new string[tiles.Length];
+
+        savedData.tileNeighbor1 = new Vector3Int[tiles.Length];
+        savedData.tileNeighbor2 = new Vector3Int[tiles.Length];
+        savedData.tileNeighbor3 = new Vector3Int[tiles.Length];
+        savedData.tileNeighbor4 = new Vector3Int[tiles.Length];
+        savedData.tileNeighbor5 = new Vector3Int[tiles.Length];
+        savedData.tileNeighbor6 = new Vector3Int[tiles.Length];
+        savedData.tileNeighbor7 = new Vector3Int[tiles.Length];
+        savedData.tileNeighbor8 = new Vector3Int[tiles.Length];
 
         for (int i = 0; i < tiles.Length; i++)
         {
@@ -52,11 +60,15 @@ public class SystemsController : MonoBehaviour
             savedData.tileOwned[i] = cur.owned;
             savedData.sprite[i] = cur.sprite;
 
-            savedData.tileNeighbors[i] = new Vector3Int[cur.neighbors.Length];
-            for (int j = 0; j < cur.neighbors.Length; j++)
-            {
-                savedData.tileNeighbors[i][j] = cur.neighbors[j];
-            }
+            savedData.tileNeighbor1[i] = cur.neighbors[0];
+            savedData.tileNeighbor2[i] = cur.neighbors[1];
+            savedData.tileNeighbor3[i] = cur.neighbors[2];
+            savedData.tileNeighbor4[i] = cur.neighbors[3];
+            savedData.tileNeighbor5[i] = cur.neighbors[4];
+            savedData.tileNeighbor6[i] = cur.neighbors[5];
+            savedData.tileNeighbor7[i] = cur.neighbors[6];
+            savedData.tileNeighbor8[i] = cur.neighbors[7];
+
         }
         Debug.Log("<color=green>TileData saved</color>");
 
@@ -93,9 +105,7 @@ public class SystemsController : MonoBehaviour
         savedData.vmood = new int[vData.Length];
         savedData.vAC = new int[vData.Length];
         savedData.vHP = new int[vData.Length];
-        savedData.vAGI = new int[vData.Length];
-        savedData.vallowedTypes = new int[vData.Length][];
-        savedData.vcurrentPath = new Vector3Int[vData.Length][];
+        savedData.vAGI = new int[vData.Length];        
 
         for (int i = 0; i < vData.Length; i++)
         {
@@ -118,27 +128,32 @@ public class SystemsController : MonoBehaviour
             savedData.vatHome[i] = vData[i].atHome;
             savedData.vcurrentLocation[i] = vData[i].currentLocation.pos;
             savedData.vgoingTo[i] = (int)vData[i].goingTo;
+            savedData.vcurrentPath = new Vector3Int[vData.Length];
+
             if (vData[i].target != null)
             {
                 savedData.vtarget[i] = vData[i].target.pos;
             }
-            else
-            {
-                savedData.vtarget[i] = Vector3Int.zero;
-            }
             savedData.vatLocation[i] = vData[i].atLocation;
-            
-            savedData.vallowedTypes[i] = new int[vData[i].allowedTypes.Length];
-            for (int j = 0; j < vData[i].allowedTypes.Length; j++)
+
+            if (vData[i].currentPath.Length > 0)
             {
-                savedData.vallowedTypes[i][j] = (int)vData[i].allowedTypes[j];                
+                savedData.vcurrentPath[i] = vData[i].currentPath[0];
             }
 
-            savedData.vcurrentPath[i] = new Vector3Int[vData[i].currentPath.Length];
-            for (int j=0;j<vData[i].currentPath.Length;j++)
+            for (int j = 0; j < vData[i].allowedTypes.Length; j++)
             {
-                savedData.vcurrentPath[i][j] = vData[i].currentPath[j];
+                switch (j)
+                {
+                    case 0: savedData.vallowedTypes0 = (int)vData[i].allowedTypes[j]; break;
+                    case 1: savedData.vallowedTypes1 = (int)vData[i].allowedTypes[j]; break;
+                    case 2: savedData.vallowedTypes2 = (int)vData[i].allowedTypes[j]; break;
+                    case 3: savedData.vallowedTypes3 = (int)vData[i].allowedTypes[j]; break;
+                    case 4: savedData.vallowedTypes4 = (int)vData[i].allowedTypes[j]; break;
+                    case 5: savedData.vallowedTypes5 = (int)vData[i].allowedTypes[j]; break;
+                }
             }
+
             savedData.vmood[i] = vData[i].mood;
             savedData.vAC[i] = vData[i].AC;
             savedData.vHP[i] = vData[i].HP;
@@ -161,8 +176,6 @@ public class SystemsController : MonoBehaviour
         savedData.eslowed = new bool[eData.Length];
         savedData.ecurrentLoc = new Vector3[eData.Length];        
         savedData.etargetTile = new Vector3Int[eData.Length];
-        savedData.eallowedTypes = new int[eData.Length][];
-        savedData.ecurrentPath = new Vector3Int[eData.Length][];
 
         for (int i=0;i<eData.Length;i++)
         {
@@ -178,26 +191,28 @@ public class SystemsController : MonoBehaviour
             savedData.elName[i] = eData[i].lName;
             savedData.egender[i] = eData[i].gender;
             savedData.eslowed = new bool[eData.Length];
+            savedData.ecurrentPath = new Vector3Int[eData.Length];
             savedData.ecurrentLoc[i] = eData[i].currentLoc.pos;
             if (eData[i].targetTile != null)
             {
                 savedData.etargetTile[i] = eData[i].targetTile.pos;
             }
-            else
-            {
-                savedData.etargetTile[i] = Vector3Int.zero;
-            }
-            
-            savedData.eallowedTypes[i] = new int[eData[i].allowedTypes.Length];            
-            for(int j=0;j<savedData.eallowedTypes[i].Length;j++)
-            {
-                savedData.eallowedTypes[i][j] = (int)eData[i].allowedTypes[j];
-            }
 
-            savedData.ecurrentPath[i] = new Vector3Int[eData[i].currentPath.Length];
-            for (int j = 0; j < savedData.ecurrentPath[i].Length; j++)
+            for (int j = 0; j < eData[i].allowedTypes.Length; j++)
             {
-                savedData.ecurrentPath[i][j] = eData[i].currentPath[j];
+                switch (j)
+                {
+                    case 0: savedData.eallowedTypes0 = (int)eData[i].allowedTypes[j]; break;
+                    case 1: savedData.eallowedTypes1 = (int)eData[i].allowedTypes[j]; break;
+                    case 2: savedData.eallowedTypes2 = (int)eData[i].allowedTypes[j]; break;
+                    case 3: savedData.eallowedTypes3 = (int)eData[i].allowedTypes[j]; break;
+                    case 4: savedData.eallowedTypes4 = (int)eData[i].allowedTypes[j]; break;
+                    case 5: savedData.eallowedTypes5 = (int)eData[i].allowedTypes[j]; break;
+                }
+            }
+            if (eData[i].currentPath.Length > 0)
+            {
+                savedData.ecurrentPath[i] = eData[i].currentPath[0];
             }
         }
         Debug.Log("<color=green>EnemyData saved</color>");

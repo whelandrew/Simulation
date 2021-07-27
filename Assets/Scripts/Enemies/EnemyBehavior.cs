@@ -30,10 +30,10 @@ public class EnemyBehavior : MonoBehaviour
             {
                 Behaviors();
 
-                if (eData.currentPath.Length > 0)
-                {
-                    WalkPath();
-                }
+                //if (eData.currentPath.Length > 0)
+                //{
+                //    WalkPath();
+                //}
             }
         }
     }
